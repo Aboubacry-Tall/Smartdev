@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Basic Category -->
+        <record id="hr_salary_rule_category_basic" model="hr.salary.rule.category">
+            <field name="code">BASIC</field>
+            <field name="name">Basique</field>
+        </record>
+
+        <!-- Allowance Category -->
+        <record id="hr_salary_rule_category_alw" model="hr.salary.rule.category">
+            <field name="code">ALW</field>
+            <field name="name">Allocation</field>
+        </record>
+
+        <!-- Gross Salary Category -->
+        <record id="hr_salary_rule_category_gross" model="hr.salary.rule.category">
+            <field name="code">GROSS</field>
+            <field name="name">Salaire imposable</field>
+        </record>
+
+        <!-- Deduction Category -->
+        <record id="hr_salary_rule_category_ded" model="hr.salary.rule.category">
+            <field name="code">DED</field>
+            <field name="name">Déduction</field>
+        </record>
+
+        <!-- Net Category -->
+        <record id="hr_salary_rule_category_net" model="hr.salary.rule.category">
+            <field name="code">NET</field>
+            <field name="name">Net</field>
+        </record>
+
+        <!-- Company Contribution Category -->
+        <record id="hr_salary_rule_category_comp" model="hr.salary.rule.category">
+            <field name="code">COMP</field>
+            <field name="name">Contribution de la société</field>
+        </record>
+
+        <!-- Gross (Brut) Category -->
+        <record id="hr_salary_rule_category_brut" model="hr.salary.rule.category">
+            <field name="code">Brut</field>
+            <field name="name">Brut</field>
+        </record>
+
+        <!-- CNSS Category -->
+        <record id="hr_salary_rule_category_cnss" model="hr.salary.rule.category">
+            <field name="code">CNSS</field>
+            <field name="name">CNSS</field>
+        </record>
+
+        <!-- CNAM Category -->
+        <record id="hr_salary_rule_category_cnam" model="hr.salary.rule.category">
+            <field name="code">CNAM</field>
+            <field name="name">CNAM</field>
+        </record>
+
+        <!-- BI Category -->
+        <record id="hr_salary_rule_category_bi" model="hr.salary.rule.category">
+            <field name="code">BI</field>
+            <field name="name">BI</field>
+        </record>
+
+        <!-- ITS Category -->
+        <record id="hr_salary_rule_category_its" model="hr.salary.rule.category">
+            <field name="code">ITS</field>
+            <field name="name">ITS</field>
+        </record>
+
+        <!-- Primes Category -->
+        <record id="hr_salary_rule_category_primes" model="hr.salary.rule.category">
+            <field name="code">Primes</field>
+            <field name="name">Primes</field>
+        </record>
+
+        <!-- Loan (Prêt) Category -->
+        <record id="hr_salary_rule_category_pret" model="hr.salary.rule.category">
+            <field name="code">Pret</field>
+            <field name="name">Prêt</field>
+        </record>
+
+        <!-- Total Deductions (TTR) Category -->
+        <record id="hr_salary_rule_category_ttr" model="hr.salary.rule.category">
+            <field name="code">TTR</field>
+            <field name="name">Total Retenus</field>
+        </record>
+
+        <!-- Other (Autre) Category -->
+        <record id="hr_salary_rule_category_autre" model="hr.salary.rule.category">
+            <field name="code">AUTRE</field>
+            <field name="name">Autre</field>
+        </record>
+
+    </data>
+</odoo>

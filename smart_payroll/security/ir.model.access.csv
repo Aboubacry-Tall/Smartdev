@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+smart_payroll.access_hr_salary_journal,access_hr_salary_journal,smart_payroll.model_hr_salary_journal,base.group_user,1,1,1,1
+smart_payroll.access_hr_contract_category,access_hr_contract_category,smart_payroll.model_hr_contract_category,base.group_user,1,1,1,1

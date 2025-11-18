@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="hr_payslip_view_form_days">
+        <field name="name">hr.payslip.inherit.form.days</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[.//field[@name='date_from']]/div" position="after">
+                <field name="days" string="Presence"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

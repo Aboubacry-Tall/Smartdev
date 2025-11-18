@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_hr_salary_journal_form" model="ir.ui.view"> 
+            <field name="name">hr.salary.journal.form</field>
+            <field name="model">hr.salary.journal</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Confirmer" name="action_validate" type="object" class="oe_highlight" invisible="state != 'draft'" />
+                        <button string="Approuver" name="action_approuvate" type="object" class="oe_highlight" invisible="state != 'verify'" />
+                        <button string="Editer" name="action_draft" type="object" invisible="state in ('verify', 'draft')"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_salary_journal" class="oe_stat_button" icon="fa-users" type="object" >
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><field name="payslip_count"/></span>
+                                    <span class="o_stat_text">Fiche de paie</span>
+                                </div>
+                            </button>
+                            <button name="action_open_bank_journal" class="oe_stat_button" icon="fa-university" type="object" invisible="state not in ('verify', 'done')">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><field name="payslip_count"/></span>
+                                    <span class="o_stat_text">Journal de banque</span>
+                                </div>
+                            </button>
+                            <button name="action_open_control_journal" class="oe_stat_button" icon="fa-check" type="object" invisible="state not in ('verify', 'done')">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><field name="payslip_count"/></span>
+                                    <span class="o_stat_text">Journal de contrôles</span>
+                                </div>
+                            </button>
+                        </div>
+                        <label for="name" string="Batch Name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. April 2025" readonly="state != 'draft'"/>
+                        </h1>
+                        <group> 
+                            <group col="6">
+                                <!-- <field name="name" readonly="state not in ('draft', 'verify')" /> -->
+                                <field name="payslip_run_id" readonly="state not in ('draft', 'verify')" />
+                            </group>
+                            <group col="6">  
+                                <field name="date_from" readonly="state not in ('draft', 'verify')"/>
+                                <field name="date_to" readonly="state not in ('draft', 'verify')"/>  
+                            </group>
+                        </group>
+                        <group>
+                            <field name="payslip_ids" mode="list" string="" readonly="state not in ('draft', 'verify')">
+                                <list editable="bottom">
+                                    <field name="currency_id"  options="{'no_create': True, 'no_open': True}" column_invisible="True"/>
+                                    <field name="matricule" string="Matricule" />
+                                    <field name="name" string="Employé" />
+                                    <field name="job_id" string="Fonction" />
+                                    <field name="department_id" string="Département" />
+                                    <field name="days" string="NBR jours" />
+                                    <field name="t_brut" string="S.Brut" sum="Total S.Brut" />
+                                    <field name="t_net" string="T.Net" sum="Total Net" />
+                                    <field name="t_retenue" string="T.Retenue" sum="Total Retenue" />
+                                    <field name="t_other" string="Autres Attachement" sum="Total Attachement" />
+                                    <field name="t_net_paid" string="Net à payer" sum="Total Net à payer" />
+                                </list>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_hr_salary_payslip_list" model="ir.ui.view">
+            <field name="name">hr.payslip.list</field>
+            <field name="model">hr.payslip</field>
+            <field name="arch" type="xml">
+                <list string="Liste des employés">
+                    <field name="currency_id"  options="{'no_create': True, 'no_open': True}" column_invisible="True" />
+                    <field name="matricule" string="Matricule" />
+                    <field name="name" string="Employé" />
+                    <field name="job_id" string="Fonction" column_invisible="not context.get('salary_journal', False)" />
+                    <field name="department_id" string="Département" column_invisible="not context.get('salary_journal', False)"/>
+                    <field name="t_brut" string="S.Brut" sum="Total S.Brut" column_invisible="not context.get('salary_journal', False)"/>
+                    <field name="days" string="NBR jours" column_invisible="not context.get('salary_journal', False)"/>
+                    <field name="t_net" string="T.Net" sum="Total Net" column_invisible="not context.get('salary_journal', False)"/>
+                    <field name="t_retenue" string="T.Retenue" sum="Total Retenue" column_invisible="not context.get('salary_journal', False)"/>
+                    <field name="t_other" string="Autres Attachement" sum="Total Attachement" column_invisible="not context.get('salary_journal', False)"/>
+                    <field name="t_net_paid" string="Net à payer" sum="Total Net à payer" column_invisible="not context.get('salary_journal', False) and not context.get('bank_journal', False)"/>
+                    <field name="delta_t_brut" decoration-success="delta_t_brut > 0" decoration-danger="delta_t_brut &lt; 0" string="S.Brut" sum="Total Écart S.Brut" column_invisible="not context.get('control_journal', False)"/>
+                    <field name="delta_t_net" decoration-success="delta_t_net > 0" decoration-danger="delta_t_net &lt; 0" string="T.Net" sum="Total Écart Net" column_invisible="not context.get('control_journal', False)"/>
+                    <field name="delta_t_retenue" decoration-success="delta_t_retenue > 0" decoration-danger="delta_t_retenue &lt; 0" string="Retenue" sum="Total Écart Retenue" column_invisible="not context.get('control_journal', False)"/>
+                    <field name="delta_t_other" decoration-success="delta_t_other > 0" decoration-danger="delta_t_other &lt; 0" string="Autres" sum="Total Écart Autres" column_invisible="not context.get('control_journal', False)"/>
+                    <field name="delta_t_net_paid" decoration-success="delta_t_net_paid > 0" decoration-danger="delta_t_net_paid &lt; 0" string="Net à Payer" sum="Total Écart Net à Payer" column_invisible="not context.get('control_journal', False)"/>
+                </list> 
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="control_journal_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                        <h2 class="text-center">Journal de contrôles</h2>
+                        <div style="margin-bottom: 20px;">
+                            <div style="width: 50%; float: left;">
+                                Période du <t t-esc="date_from"/> au <t t-esc="date_to"/>
+                            </div>
+                            <div style="width: 50%; float: right; text-align: right;">
+                                Paiement le : <t t-esc="time.strftime('%d-%m-%Y')"/>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th class="fw-bold"><strong>Matricule</strong></th>
+                                    <th class="fw-bold"><strong>Nom</strong></th>
+                                    <th class="fw-bold"><strong>Compte bancaire</strong></th>
+                                    <th class="fw-bold"><strong>Net à payer Pre</strong></th>
+                                    <th class="fw-bold"><strong>Net à payer</strong></th>
+                                    <th class="fw-bold"><strong>Écart</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="total_net" t-value="0"/>
+                                <t t-foreach="docs" t-as="emp">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="emp.matricule" />
+                                        </td>
+                                        <td>
+                                             <t t-esc="emp.name" />
+                                        </td>
+                                        <td>
+                                            <t t-esc="emp.bank_account_id.acc_number" />
+                                        </td>
+                                        <td>
+                                            <t t-esc="emp.t_net_paid_pre" />
+                                        </td>
+                                        <td>
+                                            <t t-esc="emp.t_net_paid" />
+                                        </td>
+                                        <td>
+                                            <t t-esc="emp.t_diff" />
+                                        </td>
+                                    </tr>
+                                    <t t-set="total_net" t-value="total_net + emp.t_net_paid"/>
+                                </t>
+                                <tr>
+                                    <td colspan="3" style="text-align:center;"><strong>Total</strong></td>
+                                    <td><strong><t t-esc="total_net" /></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-left: 40%; margin-right: 20%; text-align: center;">
+                            <p>
+                                Directeur Général <br/>
+                                CHEIKH ABDERAHMANE
+                            </p>
+                        </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

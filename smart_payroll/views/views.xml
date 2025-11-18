@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="smart_payroll.list">
+      <field name="name">smart_payroll list</field>
+      <field name="model">smart_payroll.smart_payroll</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </list>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="smart_payroll.action_window">
+      <field name="name">smart_payroll window</field>
+      <field name="res_model">smart_payroll.smart_payroll</field>
+      <field name="view_mode">list,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="smart_payroll.action_server">
+      <field name="name">smart_payroll server</field>
+      <field name="model_id" ref="model_smart_payroll_smart_payroll"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="smart_payroll" id="smart_payroll.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="smart_payroll.menu_1" parent="smart_payroll.menu_root"/>
+    <menuitem name="Menu 2" id="smart_payroll.menu_2" parent="smart_payroll.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="smart_payroll.menu_1_list" parent="smart_payroll.menu_1"
+              action="smart_payroll.action_window"/>
+    <menuitem name="Server to list" id="smart_payroll" parent="smart_payroll.menu_2"
+              action="smart_payroll.action_server"/>
+-->
+  </data>
+</odoo>

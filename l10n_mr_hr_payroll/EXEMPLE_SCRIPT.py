@@ -24,7 +24,7 @@ def create_mauritanian_employee(env):
     
     employee = env['hr.employee'].create({
         'name': 'Ahmed Mohamed Ould Abdallahi',
-        'work_email': 'ahmed.mohamed@somagaz.mr',
+        'work_email': 'ahmed.mohamed@odoo.mr',
         'work_phone': '+222 45 25 12 34',
         
         # Informations mauritaniennes spécifiques
