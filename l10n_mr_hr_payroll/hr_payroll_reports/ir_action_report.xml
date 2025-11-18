@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="custom_hr_payslip" model="ir.actions.report">
+        <field name="name">ETAT DE VIREMENT DES SALAIRES</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.custom_hr_payslip_report</field>
+        <field name="report_file">l10n_mr_hr_payroll.custom_hr_payslip_report</field>
+        <field name="print_report_name">'ETAT - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="custom_salary_report_d" model="ir.actions.report">
+        <field name="name">ETAT DE VIREMENT DES SALAIRES</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.custom_salary_report__payslip_banques</field>
+        <field name="report_file">l10n_mr_hr_payroll.custom_salary_report__payslip_banques</field>
+        <field name="print_report_name">'ETAT - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+    
+
+    <record model="ir.actions.server" id="custom_hr_payslipac">
+        <field name="name">ETAT DE VIREMENT DES SALAIRES</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+        if records:
+    action = records.print_payslips()
+        </field>
+    </record>
+<!--
+    <record id="custom_salary_rules_report_action" model="ir.actions.report">
+        <field name="name">ETAT DE VIREMENT DES SALAIRES PAR REGLES</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.custom_salary_rules_report</field>
+        <field name="report_file">l10n_mr_hr_payroll.custom_salary_rules_report</field>
+        <field name="print_report_name">' ETAT - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record> -->
+
+
+    <record id="action_report_hr_payslips_run" model="ir.actions.report">
+        <field name="name">ETAT DE VIREMENT DES SALAIRES PAR BANQUE</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.custom_salary_report_banques</field>
+        <field name="report_file">l10n_mr_hr_payroll.custom_salary_report_banques</field>
+        <field name="print_report_name">'ETAT - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+                    <!-- FATIS -->
+    <record id="action_report_hr_payslips_run_its" model="ir.actions.report">
+        <field name="name">ETAT ITS SOMOGAS</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_hr_payslip_run</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_hr_payslip_run</field>
+        <field name="print_report_name">'ETAT ITS - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="action_report_hr_payslips_run_cnam" model="ir.actions.report">
+        <field name="name">ETAT CNAM</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_hr_payslip_cnam</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_hr_payslip_cnam</field>
+        <field name="print_report_name">'ETAT CNAM - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_hr_payslips_run_cnss" model="ir.actions.report">
+        <field name="name">ETAT CNSS SOMOGAZ</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_hr_payslip_cnss</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_hr_payslip_cnss</field>
+        <field name="print_report_name">'ETAT CNSS - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_hr_payslips_run_etat1" model="ir.actions.report">
+        <field name="name">ETAT PRIMIERE PARTIE</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_hr_payslip_etat1</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_hr_payslip_etat1</field>
+        <field name="print_report_name">'ETAT 1 PARTIE - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_hr_payslips_run_etat2" model="ir.actions.report">
+        <field name="name">ETAT DEUXIEME PARTIE</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_hr_payslip_etat2</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_hr_payslip_etat2</field>
+        <field name="print_report_name">'ETAT 2 PARTIE- %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    
+
+<!-- action server ETAT ITS -->
+   
+    <record id="action_report_payslip_ts" model="ir.actions.report">
+        <field name="name">Etat ITS</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_payslip_its</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_payslip_its</field>
+        <field name="print_report_name">'its - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+   
+    <record id="action_print_payslips_1" model="ir.actions.server">
+        <field name="name">ETAT ITS SOMOGAZ</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = record.print_reports()
+        </field>
+    </record>
+
+
+    <record id="action_report_payslip_cnam" model="ir.actions.report">
+        <field name="name">Etat CNAM</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_payslip_cnam</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_payslip_cnam</field>
+        <field name="print_report_name">'CNAM - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_print_payslips_cnam" model="ir.actions.server">
+        <field name="name">ETAT CNAM </field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = record.print_reports_cnam()
+        </field>
+    </record>
+
+    <record id="action_report_payslip_cnss" model="ir.actions.report">
+        <field name="name">Etat CNSS</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_payslip_cnss</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_payslip_cnss</field>
+        <field name="print_report_name">'CNSS - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_print_payslips_cnss" model="ir.actions.server">
+        <field name="name">ETAT CNSS </field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = record.print_reports_cnss()
+        </field>
+    </record>
+
+    <record id="action_report_payslip_etat1" model="ir.actions.report">
+        <field name="name">ETAT PRIMIERE PARTIE </field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_payslip_etat1</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_payslip_etat1</field>
+        <field name="print_report_name">'ETAT 1 PARTIE - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_print_payslips_etat1" model="ir.actions.server">
+        <field name="name">ETAT PRIMIERE PARTIE</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = record.print_reports_etat1()
+        </field>
+    </record>
+
+    <record id="action_report_payslip_etat2" model="ir.actions.report">
+        <field name="name">ETAT DEUXIEME PARTIE</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_payslip_etat2</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_payslip_etat2</field>
+        <field name="print_report_name">'ETAT 2 PARTIE - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_print_payslips_etat2" model="ir.actions.server">
+        <field name="name">ETAT DEUXIEME PARTIE</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = record.print_reports_etat2()
+        </field>
+    </record>
+
+    <!-- <record id="action_report_payslip_journal_ctr" model="ir.actions.report">
+        <field name="name">Journal de Controle</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_hr_payroll.report_payslip_journal_control</field>
+        <field name="report_file">l10n_mr_hr_payroll.report_payslip_journal_control</field>
+        <field name="print_report_name">'Journal de controle - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_print_payslips_journal" model="ir.actions.server">
+        <field name="name">Journal de Controle</field>
+        <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+        <field name="binding_model_id" ref="hr_payroll.model_hr_payslip" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = record.print_reports_control()
+        </field>
+    </record> -->
+
+    
+</odoo>

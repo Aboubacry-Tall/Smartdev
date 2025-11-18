@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hr_echallon_form" model="ir.ui.view">
+        <field name="name">hr.echallon.form</field>
+        <field name="model">hr.echallon</field>
+        <field name="arch" type="xml">
+            <form string="Echallon">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="salary"/>
+                        <field name="category"  />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_echallon_tree" model="ir.ui.view">
+        <field name="name">hr.echallon.tree</field>
+        <field name="model">hr.echallon</field>
+        <field name="arch" type="xml">
+            <list string="Echallon">
+                <field name="name"/>
+                <field name="salary"/>
+                <field name="category"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_category_form" model="ir.ui.view">
+        <field name="name">hr.category.form</field>
+        <field name="model">hr.category</field>
+        <field name="arch" type="xml">
+            <form string="Category">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="salary_min"/>
+                        <field name="p_logt"/>
+                        <field name="p_transport"/>
+                        <field name="p_eau_electricite"/>
+                        <field name="p_telephone"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_category_tree" model="ir.ui.view">
+        <field name="name">hr.category.tree</field>
+        <field name="model">hr.category</field>
+        <field name="arch" type="xml">
+            <list string="Category">
+                <field name="name"/>
+                <field name="salary_min"/>
+                <field name="p_logt"/>
+                <field name="p_transport"/>
+                <field name="p_eau_electricite"/>
+                <field name="p_telephone"/>
+
+            </list>
+        </field>
+    </record>
+
+        <!-- Echallon Actions -->
+        <record id="action_hr_echallon" model="ir.actions.act_window">
+            <field name="name">Echallons</field>
+            <field name="res_model">hr.echallon</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to create a new echallon.
+                </p>
+            </field>
+        </record>
+
+        <!-- Category Actions -->
+        <record id="action_hr_category" model="ir.actions.act_window">
+            <field name="name">Categories</field>
+            <field name="res_model">hr.category</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to create a new category.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_hr_virement" model="ir.actions.act_window">
+            <field name="name">Virement</field>
+            <field name="res_model">hr.virement</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p>
+                    Créez et gérez les virements bancaires des employés.
+                </p>
+            </field>
+        </record>
+
+        <record id="view_hr_virement_tree" model="ir.ui.view">
+            <field name="name">hr.virement.tree</field>
+            <field name="model">hr.virement</field>
+            <field name="arch" type="xml">
+                <list string="Virement">
+                    <field name="bank_id"/>
+                    <field name="objet"/>
+                    <field name="montant_chiffre"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hr_virement_form" model="ir.ui.view">
+            <field name="name">hr.virement.form</field>
+            <field name="model">hr.virement</field>
+            <field name="arch" type="xml">
+                <form string="Virement">
+                    <sheet>
+                        <group>
+                            <field name="date"/>
+                            <field name="bank_id"/>
+                            <field name="compte"/>
+                            <field name="objet"/>
+                            <field name="montant_chiffre"/>
+                            <field name="montant_lettre"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    <!-- Menu for Echallons -->
+    <menuitem id="menu_hr_echallon_echallons" name="Echallons" parent="hr_payroll.menu_hr_salary_configuration" action="action_hr_echallon" sequence="10"/>
+
+    <!-- Menu for Categories -->
+    <menuitem id="menu_hr_category_categories" name="Categories" parent="hr_payroll.menu_hr_salary_configuration" action="action_hr_category" sequence="10"/>
+
+     <menuitem
+        id="menu_hr_salary_configuration_report"
+        name="Report"
+        parent="hr_payroll.menu_hr_payroll_report"
+        sequence="80"
+    />
+
+    <menuitem id="menu_hr_salary_configuration_report_virement" name="Virement" parent="l10n_mr_hr_payroll.menu_hr_salary_configuration_report" action="action_hr_virement" sequence="10"/>
+
+</odoo>

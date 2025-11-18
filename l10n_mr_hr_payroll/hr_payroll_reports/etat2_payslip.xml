@@ -1,0 +1,107 @@
+<odoo>
+    <data>
+        <template id="report_payslip_etat2">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center mt-0">ETAT DE SALAIRE 2IEME PARTIE</h2>
+                        <br/>
+                        <p>
+                            <strong>Date du jour:</strong>
+                            <span t-esc="time.strftime('%d-%m-%Y')"/>
+                        </p>
+                        <p>
+                            <strong>Période: </strong>
+                            <strong>du </strong>
+                            <span t-esc="start_date"/>
+                            <strong>au </strong>
+                            <span t-esc="end_date"/>
+                        </p>
+                        <div class="oe_structure"></div>
+
+                        <table class="table table-bordered table-sm" style="border-collapse: collapse; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left; border: 1px solid black;">Mat</th>
+                                    <t t-foreach="sorted(salary_rules.items(), key=lambda r: r[1]['position'])" t-as="rule">
+                                        <th style="text-align: left; border: 1px solid black;">
+                                            <t t-esc="rule[1]['label']"/>
+                                        </th>
+                                    </t>
+                                    <th style="text-align: left; border: 1px solid black;">TOTAL GAIN</th>
+                                    <th style="text-align: left; border: 1px solid black;">Net à payer</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                <tr t-foreach="employee_data" t-as="emp_info">
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <span t-out="emp_info['employee'].l10n_mr_matricule"/>
+                                    </td>
+                                    <t t-foreach="sorted(salary_rules.items(), key=lambda r: r[1]['position'])" t-as="rule" t-key="rule[0]">
+                                        <td style="text-align: left; border: 1px solid black;">
+                                            <span t-out="abs(sum(payslip.line_ids.filtered(lambda l: l.code == rule[0]).total for payslip in emp_info['payslips']))"/>
+                                        </td>
+                                    </t>
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <span t-out="abs(sum(payslip.line_ids.filtered(lambda l: l.code == 'TOTAL_GAIN').total for payslip in emp_info['payslips']))"/>
+                                    </td>
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <span t-out="abs(sum(payslip.line_ids.filtered(lambda l: l.code == 'NET').total for payslip in emp_info['payslips']))"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                        <span>
+                                            <t t-esc="len(employee_data)"/>
+                                        </span>
+                                    </td>
+                                    <t t-foreach="sorted(salary_rules.items(), key=lambda r: r[1]['position'])" t-as="rule" t-key="rule[0]">
+                                        <td style="text-align: left; border: 1px solid black;">
+                                            <strong>
+                                                <span t-out="round(abs(sum(abs(sum(payslip.line_ids.filtered(lambda l: l.code == rule[0]).total for payslip in emp['payslips'])) for emp in employee_data)))"/>
+                                            </strong>
+                                        </td>
+                                    </t>
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <strong>
+                                            <span t-out="round(abs(sum(abs(sum(payslip.line_ids.filtered(lambda l: l.code == 'TOTAL_GAIN').total for payslip in emp['payslips'])) for emp in employee_data)))"/>
+                                        </strong>
+                                    </td>
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <strong>
+                                            <span t-out="round(abs(sum(abs(sum(payslip.line_ids.filtered(lambda l: l.code == 'NET').total for payslip in emp['payslips'])) for emp in employee_data)))"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <div class="row h6">
+                            <div class="col-3 text-center">
+                                <strong>
+                                    <span> Le Chef du personnel </span>
+                                </strong>
+                            </div>
+                            <div class="col-3 text-center">
+                                <strong>
+                                    <span> Le Directeur Administratif </span>
+                                </strong>
+                            </div>
+                            <div class="col-3 text-center">
+                                <strong>
+                                    <span> La Directrice financière </span>
+                                </strong>
+                            </div>
+                            <div class="col-3 text-center">
+                                <strong>
+                                    <span> Le Directeur général </span>
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+            </t>
+        </template>
+    </data>
+</odoo>

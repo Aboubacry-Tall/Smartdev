@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="hr_CNSS_register" model="res.partner">
+            <field name="name">Caisse Nationale de Sécurité Sociale</field>            <!-- Caisse Nationale de Sécurité Sociale -->
+            <field name="city">Nouakchott</field>
+            <field name="country_id" ref="base.mr"/>
+        </record>
+        <record id="hr_CNAM_register" model="res.partner">
+            <field name="name">Caisse Nationale d'Assurance Maladie'</field>            
+            <field name="city">Nouakchott</field>
+            <field name="country_id" ref="base.mr"/>
+        </record>
+    </data>
+</odoo>

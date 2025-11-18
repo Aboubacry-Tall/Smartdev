@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+        <template id="report_payslip_journal_control">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Employee Payslip Report for May</h2>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Nom de Règle de Paie</th>
+                                <th>Compte Comptable</th>
+                                <th>Nom du Compte</th>
+                                <th>Débit</th>
+                                <th>Crédit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="employee_data" t-as="line">
+                                <tr>
+                                    <td t-esc="line['rule_name']"/>
+                                    <td t-esc="line['account_code']"/>
+                                    <td t-esc="line['account_name']"/>
+                                    <td t-esc="line['debit']"/>
+                                    <td t-esc="line['credit']"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

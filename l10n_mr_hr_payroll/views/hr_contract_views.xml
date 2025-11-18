@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_contract_view_form_l10n_mr_payroll" model="ir.ui.view">
+            <field name="name">hr.version.view.form.l10n.mr_payroll</field>
+            <field name="model">hr.version</field>
+            <field name="priority">20</field>
+            <field name="inherit_id" ref="hr_payroll.hr_contract_template_view_form"/>
+            <field name="arch" type="xml">
+                <field name="schedule_pay" position="after">
+                    <field name="category_id" class="o_hr_narrow_field" />
+                    <field name="echallon_id" class="o_hr_narrow_field" domain="[('category', '=', category_id)]"/>
+                </field>
+                <page name="information" class="o_hr_contract_salary_information" position="inside">
+                    <group name="untaxed" string="Mauritania Localization" invisible="country_code != 'MR'">
+                        <field name="l10n_mr_Differentiel" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_Production_technique" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_Interimaire" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_PUV" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_Responsabilite" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_transporter_par"/>
+                        <field name="l10n_mr_Astreinte" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_Risque" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_Eloignement" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_Charges_locales" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_Technicite" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_saisie" class="o_hr_narrow_field"/>
+                        <field name="l10n_mr_sursalaire" class="o_hr_narrow_field"/>
+                        
+                    </group>
+                </page>
+            </field>
+        </record>
+    </data>
+</odoo>

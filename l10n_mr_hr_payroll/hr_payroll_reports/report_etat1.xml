@@ -1,0 +1,239 @@
+<odoo>
+    <data>
+        <template id="report_hr_payslip_etat1">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <t t-foreach="docs" t-as="doc">
+                        <div class="page">
+                            <h2 class="text-center mt-0">ETAT DE SALAIRE 1ERE PARTIE</h2>
+                            <br/>
+                            <p>
+                                <strong>Date du jour Heur:</strong>
+                                <span t-esc="time.strftime('%d-%m-%Y %H:%M:%S')"/>
+                            </p>
+                            <p>
+                                <strong>Période: </strong>
+                                <strong>du </strong>
+                                <span t-esc="doc.date_start"/>
+                                <strong>au </strong>
+                                <span t-esc="doc.date_end"/>
+                            </p>
+                            <div class="oe_structure"></div>
+    
+                                <table class="table table-bordered table-sm" style="border-collapse: collapse; width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; border: 1px solid black;">Mat</th>
+                                            <th style="text-align: left; border: 1px solid black;">SlBase</th>
+                                            <th style="text-align: left; border: 1px solid black;">Ancien</th>
+                                            <th style="text-align: left; border: 1px solid black;">Sursa</th>
+                                            <th style="text-align: left; border: 1px solid black;">HS115%</th>
+                                            <th style="text-align: left; border: 1px solid black;">HS140%</th>
+                                            <th style="text-align: left; border: 1px solid black;">HS150%</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Tech</th>
+                                            <th style="text-align: left; border: 1px solid black;">P rend</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Tran</th>
+                                            <th style="text-align: left; border: 1px solid black;">P.Differ</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Log</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Tel</th>
+                                            <th style="text-align: left; border: 1px solid black;">Pr UV</th>
+                                            <th style="text-align: left; border: 1px solid black;">P resp</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Astr</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Fonc</th>
+                                            <th style="text-align: left; border: 1px solid black;">P. Sai</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Risq</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Eloi</th>
+                                            <th style="text-align: left; border: 1px solid black;">Cg Loc</th>
+                                            <th style="text-align: left; border: 1px solid black;">Pcais</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Tech</th>
+                                            <th style="text-align: left; border: 1px solid black;">P Inter</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.slip_ids" t-as="line">
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.employee_id.l10n_mr_matricule"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'BASIC').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'SENIORITY').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'SURSAL').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'EXTRA_HOURS_115').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'EXTRA_HOURS_140').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'EXTRA_HOURS_150').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'TECHPROD').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'TRANSP').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'DIFF').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'LOGEM').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'TELEPH').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'PUV').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'RESPONS').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'ASTREINT').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'PFONC').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'SAISIE').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'RISQ').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'ELOIGNEM').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'CHARGELOC').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'CAISSE').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'TECHNICIT3').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'INTERIM').total"/>
+                                            </td>
+                                            <td style="text-align: left; border: 1px solid black;">
+                                                <span t-out="line.line_ids.filtered(lambda l: l.code == 'TOTAL_GAIN').total"/>
+                                            </td>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span>
+                                                    <t t-esc="len(doc.slip_ids)"/>
+                                                </span>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'BASIC').total for line in doc.slip_ids )"/>
+                                            </td>
+    
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'SENIORITY').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'SURSAL').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'EXTRA_HOURS_115').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'EXTRA_HOURS_140').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'EXTRA_HOURS_150').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'TECHPROD').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'TRANSP').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'DIFF').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'LOGEM').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'TELEPH').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'LOGEM').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'PUV').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'RESPONS').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'ASTREINT').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'PFONC').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'SAISIE').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'RISQ').total for line in doc.slip_ids )"/>
+                                            </td>
+                                          
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'ELOIGNEM').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'CHARGELOC').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'TECHNICIT3').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'INTERIM').total for line in doc.slip_ids )"/>
+                                            </td>
+                                            <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                                <span t-esc="sum(line.line_ids.filtered(lambda l: l.code == 'TOTAL_GAIN').total for line in doc.slip_ids )"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br/>
+                                <div class="row h6">
+                                    <div class="col-3 text-center">
+                                        <strong>
+                                            <span> Le Chef du personnel </span>
+                                        </strong>
+                                    </div>
+                                    <div class="col-3 text-center">
+                                        <strong>
+                                            <span> Le Directeur Administratif </span>
+                                        </strong>
+                                    </div>
+                                    <div class="col-3 text-center">
+                                        <strong>
+                                            <span> La Directrice financière </span>
+                                        </strong>
+                                    </div>
+                                    <div class="col-3 text-center">
+                                        <strong>
+                                            <span> Le Directeur général </span>
+                                        </strong>
+                                    </div>
+                                </div>
+                        
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

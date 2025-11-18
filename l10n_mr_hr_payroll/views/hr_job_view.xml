@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hr_job_form_inherit" model="ir.ui.view">
+        <field name="name">hr.job.form.inherit</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Additional Information">
+                    <field name="p_prime_caisse"/>
+                    <field name="p_fonction"/>
+                    <field name="p_caution"/>
+                    <field name="p_charge_locative"/>
+                    <field name="p_transport"/>
+                    <field name="p_telephone"/>
+                    <field name="p_logt"/>
+                    <field name="p_eau_electricite"/>
+                    <field name="l10n_mr_Astreinte"/>
+                    <field name="l10n_mr_lait"/>
+
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

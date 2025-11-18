@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="l10n_mr_rule_parameter_seniority" model="hr.rule.parameter">
+        <field name="name">Mauritania: Seniority</field>
+        <field name="code">l10n_mr</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_seniority_value" model="hr.rule.parameter.value">
+        <field name="parameter_value">[
+    (0, 2, 0.0),
+    (2, 3, 0.02),
+    (3, 4, 0.04),
+    (4, 5, 0.06),
+    (5, 6, 0.08),
+    (6, 7, 0.10),
+    (7, 8, 0.12),
+    (8, 9, 0.14),
+    (9, 10, 0.16),
+    (10, 11, 0.18),
+    (11, 12, 0.20),
+    (12, 13, 0.22),
+    (13, 14, 0.24),
+    (14, 15, 0.26),
+    (15, 16, 0.28),
+    (16, 17, 0.29),
+    (17, 100, 0.30),
+
+]</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_seniority"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+
+
+
+    <!-- CNSS configuration -->
+    <record id="l10n_mr_rule_parameter_cnss" model="hr.rule.parameter">
+        <field name="name">CNSS Value (%)</field>
+        <field name="code">l10n_mr_cnss</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_cnss_value_2017" model="hr.rule.parameter.value">
+        <field name="parameter_value">4.48</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_cnss"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+    <record id="l10n_mr_rule_parameter_cnss_max" model="hr.rule.parameter">
+        <field name="name">CNSS Value Max</field>
+        <field name="code">l10n_mr_cnss_max</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+
+    <record id="l10n_mr_rule_parameter_cnss_max_value_2017" model="hr.rule.parameter.value">
+        <field name="parameter_value">15000</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_cnss_max"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+    <!-- CNSS pour l'employeur -->
+    <record id="l10n_mr_rule_parameter_cnss_patronal" model="hr.rule.parameter">
+        <field name="name">CNSS Employeur (%)</field>
+        <field name="code">l10n_mr_cnss_employeur</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_cnss_patronal_value" model="hr.rule.parameter.value">
+        <field name="parameter_value">0.13</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_cnss_patronal"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+    <!-- CNSS pour l'Employé -->
+    <record id="l10n_mr_rule_parameter_cnss_sal" model="hr.rule.parameter">
+        <field name="name">CNSS Employé (%)</field>
+        <field name="code">l10n_mr_cnss_employe</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_cnss_sal_value" model="hr.rule.parameter.value">
+        <field name="parameter_value">0.01</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_cnss_sal"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+    <!--End  CNSS configuration -->
+
+    <!-- ITS configuraion -->
+
+    <!-- ITS % -->
+    <record id="l10n_mr_rule_parameter_its" model="hr.rule.parameter">
+        <field name="name">ITS</field>
+        <field name="code">l10n_mr_its</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_its_value" model="hr.rule.parameter.value">
+        <field name="parameter_value">[
+            (0, 9000, 0.15, 0),
+            (9000, 21000, 0.25, 900),
+            (21000, float('inf'), 0.40, 4050),
+        ]</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_its"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+    <!--End  ITS configuration -->
+    <!-- CNAM -->
+    <record id="l10n_mr_rule_parameter_cnam_employe" model="hr.rule.parameter">
+        <field name="name">CNAM Employé (%)</field>
+        <field name="code">l10n_mr_cnam_employe</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_cnam_employe_value" model="hr.rule.parameter.value">
+        <field name="parameter_value">0.04</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_cnam_employe"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+    <record id="l10n_mr_rule_parameter_cnam_employeur" model="hr.rule.parameter">
+        <field name="name">CNAM Employeur (%)</field>
+        <field name="code">l10n_mr_cnam_employeur</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_cnam_employeur_value" model="hr.rule.parameter.value">
+        <field name="parameter_value">0.05</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_cnam_employeur"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+    <!-- END  CNAM -->
+
+    <!-- Montant imposable -->
+
+    <record id="l10n_mr_rule_parameter_montant_imposable" model="hr.rule.parameter">
+        <field name="name">Montant Imposable</field>
+        <field name="code">l10n_mr_montant_imposable</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_montant_imposable_value" model="hr.rule.parameter.value">
+        <field name="parameter_value">6000</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_montant_imposable"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+    <!--End Montant imposable -->
+
+
+    <record id="l10n_mr_rule_parameter_medical_alw" model="hr.rule.parameter">
+        <field name="name">Medical Allowance (%)</field>
+        <field name="code">l10n_mr_medical_alw</field>
+        <field name="country_id" ref="base.mr"/>
+    </record>
+    <record id="l10n_mr_rule_parameter_medical_alw_value_2017" model="hr.rule.parameter.value">
+        <field name="parameter_value">2.26</field>
+        <field name="rule_parameter_id" ref="l10n_mr_rule_parameter_medical_alw"/>
+        <field name="date_from" eval="datetime(2017, 1, 1).date()"/>
+    </record>
+
+
+
+
+
+
+
+
+
+</odoo>

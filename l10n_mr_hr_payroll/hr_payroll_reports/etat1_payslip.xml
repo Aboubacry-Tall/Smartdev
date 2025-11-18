@@ -1,0 +1,76 @@
+<odoo>
+    <data>
+        <template id="report_payslip_etat1">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center mt-0">ETAT DE SALAIRE 1ERE PARTIE</h2>
+                        <br/>
+                        <p>
+                            <strong>Date du jour:</strong>
+                            <span t-esc="time.strftime('%d-%m-%Y')"/>
+                        </p>
+                        <p>
+                            <strong>Période: </strong>
+                            du <span t-esc="start_date"/> au <span t-esc="end_date"/>
+                        </p>
+
+                        <table class="table table-bordered table-sm" style="border-collapse: collapse; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left; border: 1px solid black;">Mat</th>
+                                    <t t-foreach="salary_rules.items()" t-as="rule">
+                                        <th style="text-align: left; border: 1px solid black;">
+                                            <t t-esc="rule[1]"/>
+                                        </th>
+                                    </t>
+                                    <th style="text-align: left; border: 1px solid black;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                <tr t-foreach="employee_data" t-as="emp_info">
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <span t-out="emp_info['employee'].l10n_mr_matricule"/>
+                                    </td>
+                                    <t t-foreach="salary_rules.items()" t-as="rule">
+                                        <td style="text-align: left; border: 1px solid black;">
+                                            <span t-out="sum(payslip.line_ids.filtered(lambda l: l.code == rule[0]).total for payslip in emp_info['payslips'])"/>
+                                        </td>
+                                    </t>
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <span t-out="sum(payslip.line_ids.filtered(lambda l: l.code == 'TOTAL_BRUT').total for payslip in emp_info['payslips'])"/>
+                                    </td> 
+                                </tr>
+
+                                <tr>
+                                    <td style="text-align: left; font-weight: bold; border: 1px solid black;">
+                                        <span>
+                                            <t t-esc="len(employee_data)"/>
+                                        </span>
+                                    </td>
+                                    <t t-foreach="salary_rules.items()" t-as="rule">
+                                        <td style="text-align: left; border: 1px solid black;">
+                                            <strong><span t-out="round(abs(sum(abs(sum(payslip.line_ids.filtered(lambda l: l.code == rule[0]).total for payslip in emp['payslips'])) for emp in employee_data)))"/></strong>
+                                        </td>
+                                    </t>
+                                    <td style="text-align: left; border: 1px solid black;">
+                                        <strong><span t-out="round(abs(sum(abs(sum(payslip.line_ids.filtered(lambda l: l.code == 'TOTAL_BRUT').total for payslip in emp['payslips'])) for emp in employee_data)))"/></strong>
+                                    </td>
+                                </tr>
+                                  
+                            </tbody>
+                        </table>
+
+                        <br/>
+                        <div class="row h6">
+                            <div class="col-3 text-center"><strong>Le Chef du personnel</strong></div>
+                            <div class="col-3 text-center"><strong>Le Directeur Administratif</strong></div>
+                            <div class="col-3 text-center"><strong>La Directrice financière</strong></div>
+                            <div class="col-3 text-center"><strong>Le Directeur général</strong></div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
