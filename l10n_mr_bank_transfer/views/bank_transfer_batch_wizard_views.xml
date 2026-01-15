@@ -26,6 +26,15 @@
                     <group col="1">
                         <field name="source_currency_id" string="Devise source" class="w-100"/>
                     </group>
+
+                    <group col="2">
+                        <field name="transfer_type"/>
+                        <field name="source_account_id" options="{'no_create': True, 'no_quick_create': True}"/>
+                    </group>
+
+                    <group col="1">
+                        <field name="description" placeholder="Motif du virement..." class="w-100"/>
+                    </group>
                 </sheet>
                 <footer>
                     <button string="Suivant" name="action_next" type="object" class="btn-primary" />
@@ -48,6 +57,8 @@
                         <group string="Informations du lot">
                             <field name="name" readonly="1" class="fw-bold"/>
                             <field name="date" readonly="1"/>
+                            <field name="source_currency_id" readonly="1"/>
+                            <field name="transfer_type" readonly="1"/>
                         </group>
                         <group string="Statistiques">
                             <label for="employee_count" string="Employés sélectionnés"/>
@@ -63,6 +74,13 @@
                     <div class="alert alert-info mb-3" role="alert">
                         <i class="fa fa-users"/> Liste des employés avec un contrat actif (hr.version). Cochez ceux à inclure dans le lot.
                     </div>
+
+                    <group>
+                        <group string="Compte source / Motif">
+                            <field name="source_account_id" readonly="1"/>
+                            <field name="description" readonly="1"/>
+                        </group>
+                    </group>
                     
                     <!-- Liste des employés avec cases à cocher -->
                     <field name="employee_line_ids" nolabel="1">

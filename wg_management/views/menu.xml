@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem name="Wigo" id="wg_management.menu_root" groups="wg_management.group_commercial,wg_management.group_technicien,wg_management.group_financier,wg_management.group_admin"/>
+        
+        <record id="action_res_partner" model="ir.actions.act_window">
+            <field name="name">Clients</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('type_contact', '=', 'C')]</field>
+            <field name="context">{'default_type_contact': 'C'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créez un nouveau client
+                </p>
+                <p>
+                    Gérez vos clients et leurs informations.
+                </p>
+            </field>
+        </record>
+        
+        <menuitem name="Gestion de clients" 
+                  id="menu_res_partner" 
+                  parent="wg_management.menu_root" 
+                  action="action_res_partner" 
+                  groups="wg_management.group_commercial,wg_management.group_admin"
+                  sequence="10"/>
+        
+        <record id="action_sale_order" model="ir.actions.act_window">
+            <field name="name">Demandes</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{'search_default_quotation': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créez une nouvelle demande de devis
+                </p>
+                <p>
+                    Gérez vos demandes de devis et suivez leur progression.
+                </p>
+            </field>
+        </record>
+        
+        <menuitem name="Demandes" 
+                  id="menu_sale_order" 
+                  parent="wg_management.menu_root" 
+                  action="action_sale_order" 
+                  groups="wg_management.group_commercial,wg_management.group_admin"
+                  sequence="15"/>
+        
+        <menuitem name="Contrats" 
+                  id="menu_wg_contract" 
+                  parent="wg_management.menu_root" 
+                  action="action_wg_contract" 
+                  groups="wg_management.group_commercial,wg_management.group_financier,wg_management.group_admin"
+                  sequence="20"/>
+        
+        <menuitem name="Interventions" 
+                  id="menu_wg_intervention" 
+                  parent="wg_management.menu_root" 
+                  action="action_wg_intervention" 
+                  groups="wg_management.group_commercial,wg_management.group_technicien,wg_management.group_admin"
+                  sequence="30"/>
+        
+        
+        
+        <record id="action_account_move" model="ir.actions.act_window">
+            <field name="name">Facturation</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="domain">[('move_type', 'in', ('out_invoice', 'out_refund'))]</field>
+            <field name="context">{'default_move_type': 'out_invoice', 'search_default_invoices': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créez une nouvelle facture
+                </p>
+                <p>
+                    Gérez vos factures clients et leurs paiements.
+                </p>
+            </field>
+        </record>
+        
+        <menuitem name="Facturation" 
+                  id="menu_account_move" 
+                  parent="wg_management.menu_root" 
+                  action="action_account_move" 
+                  groups="wg_management.group_financier,wg_management.group_admin"
+                  sequence="40"/>
+
+        <record id="action_product_product" model="ir.actions.act_window">
+            <field name="name">Services</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="domain">[('sale_ok', '=', True)]</field>
+            <field name="context">{'default_sale_ok': True, 'default_type': 'service', 'search_default_filter_to_sell': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créez un nouveau service
+                </p>
+                <p>
+                    Gérez vos services et leurs tarifs. Vous pouvez créer des variantes de produits dans l'onglet Variantes.
+                </p>
+            </field>
+        </record>
+        
+        <menuitem name="Services" 
+                  id="menu_product_product" 
+                  parent="wg_management.menu_root" 
+                  action="action_product_product" 
+                  groups="wg_management.group_commercial,wg_management.group_admin"
+                  sequence="50"/>
+
+        <menuitem name="Motifs de rejet" 
+                  id="menu_rejection_motif" 
+                  parent="wg_management.menu_root" 
+                  action="action_rejection_motif" 
+                  groups="wg_management.group_commercial,wg_management.group_admin"
+                  sequence="60"/>
+    </data>
+</odoo>
+

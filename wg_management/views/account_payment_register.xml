@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wg_management_view_account_payment_register_form_inherit" model="ir.ui.view">
+        <field name="name">wg_management.account.payment.register.form.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_method_line_id']" position="after">
+                <field name="reference" string="Numéro de la transaction" invisible="not show_partner_bank_account" required="not reference" />
+            </xpath>
+
+            <xpath expr="//field[@name='communication']" position="replace">
+                <field name="communication" invisible="not can_edit_wizard or (can_group_payments and not group_payment)" readonly="True"/>
+            </xpath>
+
+            <xpath expr="//field[@name='communication']" position="after">
+                <field name="image" string="Numéro de la transaction" invisible="not show_partner_bank_account" required="not image"  widget='image' class="oe_avatar w-100" options="{'zoom': true, 'preview_image':'image_128'}" />
+            </xpath>
+
+            <xpath expr="//group" position="after">
+                <field name="note" string="Note" />
+            </xpath>
+        </field>
+    </record>
+    
+</odoo>
+

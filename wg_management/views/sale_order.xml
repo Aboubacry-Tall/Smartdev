@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_techniciens" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.techniciens</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_term_id" position="after">
+                <field name="technicien_ids" 
+                       widget="many2many_tags"
+                       options="{'no_create': True}"
+                       placeholder="Sélectionner les techniciens..." required="True"/>
+                <field name="rejection_motif_id" 
+                       placeholder="Sélectionner un motif de rejet..."/>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="longitude" required="True"/>
+                <field name="latitude" required="True"/>
+            </field>
+            <button name="action_confirm" position="attributes">
+                <attribute name="groups">wg_management.group_technicien</attribute>
+            </button>
+        </field>
+    </record>
+</odoo>
+

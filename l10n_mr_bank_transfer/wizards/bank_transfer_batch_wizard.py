@@ -24,6 +24,24 @@ class BankTransferBatchWizardStep1(models.TransientModel):
         default=lambda self: self.env.company.currency_id,
     )
 
+    transfer_type = fields.Selection(
+        [
+            ('simple', 'Virement Simple'),
+            ('transfer', 'Transfert (International)'),
+        ],
+        string='Type de virement',
+        required=True,
+        default='simple',
+    )
+
+    source_account_id = fields.Many2one(
+        'res.partner.bank',
+        string='Compte source',
+        help="Compte bancaire de l'entreprise à débiter (source).",
+    )
+
+    description = fields.Text(string='Motif')
+
     @api.model
     def _default_name(self):
         """Génère un nom par défaut pour le lot"""
@@ -44,6 +62,9 @@ class BankTransferBatchWizardStep1(models.TransientModel):
                 'default_batch_name': self.name,
                 'default_batch_date': self.date,
                 'default_source_currency_id': self.source_currency_id.id,
+                'default_transfer_type': self.transfer_type,
+                'default_source_account_id': self.source_account_id.id if self.source_account_id else False,
+                'default_description': self.description,
                 'dialog_size': 'extra-large',
             },
         }
@@ -122,6 +143,24 @@ class BankTransferBatchWizardStep2(models.TransientModel):
         required=True,
         readonly=True,
     )
+
+    transfer_type = fields.Selection(
+        [
+            ('simple', 'Virement Simple'),
+            ('transfer', 'Transfert (International)'),
+        ],
+        string='Type de virement',
+        required=True,
+        readonly=True,
+    )
+
+    source_account_id = fields.Many2one(
+        'res.partner.bank',
+        string='Compte source',
+        readonly=True,
+    )
+
+    description = fields.Text(string='Motif', readonly=True)
     
     employee_line_ids = fields.One2many(
         'bank.transfer.batch.wizard.employee.line',
@@ -152,6 +191,12 @@ class BankTransferBatchWizardStep2(models.TransientModel):
             res['date'] = self.env.context.get('default_batch_date')
         if self.env.context.get('default_source_currency_id'):
             res['source_currency_id'] = self.env.context.get('default_source_currency_id')
+        if self.env.context.get('default_transfer_type'):
+            res['transfer_type'] = self.env.context.get('default_transfer_type')
+        if self.env.context.get('default_source_account_id'):
+            res['source_account_id'] = self.env.context.get('default_source_account_id')
+        if self.env.context.get('default_description'):
+            res['description'] = self.env.context.get('default_description')
         
         # Charger les employés avec contrat actif
         if 'employee_line_ids' in fields_list:
@@ -202,6 +247,9 @@ class BankTransferBatchWizardStep2(models.TransientModel):
             'date': self.date,
             'source_currency_id': self.source_currency_id.id,
             'currency_id': self.source_currency_id.id,
+            'transfer_type': self.transfer_type,
+            'source_account_id': self.source_account_id.id if self.source_account_id else False,
+            'description': self.description,
         })
         
         # Créer les virements pour chaque employé sélectionné

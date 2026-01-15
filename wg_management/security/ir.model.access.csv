@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_rejection_motif,access_rejection_motif,model_rejection_motif,base.group_user,1,1,1,1
+access_wg_contract,access_wg_contract,model_wg_contract,base.group_user,1,1,1,1
+access_wg_intervention,access_wg_intervention,model_wg_intervention,base.group_user,1,1,1,1
+access_res_partner_interventions,access_res_partner_interventions,model_res_partner,base.group_user,1,1,1,1
+

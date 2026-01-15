@@ -169,9 +169,18 @@
                         <group string="Informations du lot">
                             <field name="date" widget="date"/>
                             <field name="currency_id" invisible="1"/>
+                            <field name="source_currency_id"/>
+                            <field name="transfer_type"/>
                         </group>
                         <group string="État">
                             <field name="color" widget="color_picker"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Compte source / Motif">
+                            <field name="source_account_id" options="{'no_create': True, 'no_quick_create': True}"/>
+                            <field name="description" placeholder="Motif du virement..."/>
                         </group>
                     </group>
                     

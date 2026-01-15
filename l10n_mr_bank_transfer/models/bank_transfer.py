@@ -1,4 +1,13 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+
+try:
+    import qrcode
+    import base64
+    from io import BytesIO
+except Exception:  # pragma: no cover
+    qrcode = None
+    base64 = None
+    BytesIO = None
 
 
 class BankTransfer(models.Model):
@@ -128,12 +137,117 @@ class BankTransfer(models.Model):
         readonly=False,
         store=True,
     )
+
+    date = fields.Date(
+        string='Date',
+        related='batch_id.date',
+        readonly=True,
+        store=True,
+    )
+
+    def _default_transfer_type(self):
+        batch_id = self.env.context.get('default_batch_id') or self.env.context.get('active_batch_id')
+        if batch_id:
+            batch = self.env['bank.transfer.batch'].browse(batch_id)
+            if batch.exists() and batch.transfer_type:
+                return batch.transfer_type
+        return 'simple'
+
+    transfer_type = fields.Selection(
+        [
+            ('simple', 'Virement Simple'),
+            ('transfer', 'Transfert (International)'),
+        ],
+        string='Type de virement',
+        default=_default_transfer_type,
+        tracking=True,
+        required=True,
+    )
+
+    source_account_id = fields.Many2one(
+        'res.partner.bank',
+        string='Compte source',
+        related='batch_id.source_account_id',
+        readonly=True,
+        store=True,
+    )
+
+    description = fields.Text(
+        string='Motif',
+        related='batch_id.description',
+        readonly=True,
+        store=True,
+    )
+
+    order_reference = fields.Char(
+        string='Référence ordre',
+        compute='_compute_order_reference',
+        store=True,
+        readonly=True,
+    )
     
     state = fields.Selection([
         ('draft', 'Brouillon'),
         ('done', 'Payé'),
         ('cancel', 'Annulé'),
     ], string='État', default='draft', required=True, tracking=True)
+
+    @api.depends('batch_id.name', 'matricule')
+    def _compute_order_reference(self):
+        for record in self:
+            if record.batch_id and record.batch_id.name and record.matricule:
+                record.order_reference = f"{record.batch_id.name}-{record.matricule}"
+            elif record.batch_id and record.batch_id.name:
+                record.order_reference = record.batch_id.name
+            else:
+                record.order_reference = str(record.id) if record.id else ''
+
+    def get_qr_code(self):
+        """QR code base64 (PNG) basé sur la référence de l'ordre."""
+        self.ensure_one()
+        if not qrcode or not base64 or not BytesIO:
+            return False
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(self.order_reference or self.display_name or '')
+        qr.make(fit=True)
+        img = qr.make_image()
+        buffer = BytesIO()
+        img.save(buffer, format='PNG')
+        return base64.b64encode(buffer.getvalue()).decode()
+
+    def get_lines_grouped_by_bank(self):
+        """Retourne les lignes de virement groupées par banque pour le rapport"""
+        self.ensure_one()
+        grouped = {}
+        for line in self.transfer_line_ids:
+            bank_id = line.bank_id.id if line.bank_id else 0
+            bank_name = line.bank_id.name if line.bank_id else 'Sans banque'
+            if bank_id not in grouped:
+                grouped[bank_id] = {
+                    'bank_id': line.bank_id,
+                    'bank_name': bank_name,
+                    'lines': self.env['bank.transfer.line']
+                }
+            grouped[bank_id]['lines'] |= line
+        
+        # Si aucune ligne, retourner un groupe vide
+        if not grouped:
+            grouped[0] = {
+                'bank_id': False,
+                'bank_name': '',
+                'lines': self.env['bank.transfer.line']
+            }
+        
+        # Convertir en liste pour le template
+        return list(grouped.values())
+
+    def action_print_order(self):
+        """Imprime l'ordre de virement selon le type sélectionné sur le lot."""
+        self.ensure_one()
+        if self.transfer_type == 'simple':
+            return self.env.ref('l10n_mr_bank_transfer.action_report_bank_transfer_order_simple').report_action(self)
+        # transfer (international) / fallback
+        return self.env.ref('l10n_mr_bank_transfer.action_report_bank_transfer_order_internal').report_action(self)
 
     @api.depends('employee_id', 'employee_id.bank_account_ids')
     def _compute_bank_account_ids(self):
@@ -216,6 +330,12 @@ class BankTransfer(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Crée le virement et génère automatiquement les lignes de répartition"""
+        # Si le type n'est pas explicitement fourni, l'hériter du lot.
+        for vals in vals_list:
+            if not vals.get('transfer_type') and vals.get('batch_id'):
+                batch = self.env['bank.transfer.batch'].browse(vals['batch_id'])
+                if batch.exists() and batch.transfer_type:
+                    vals['transfer_type'] = batch.transfer_type
         records = super().create(vals_list)
         for record in records:
             record._generate_transfer_lines()

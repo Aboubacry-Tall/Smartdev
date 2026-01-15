@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_wg_intervention_list" model="ir.ui.view">
+        <field name="name">wg.intervention.list</field>
+        <field name="model">wg.intervention</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="commercial_id"/>
+                <field name="technicien_id"/>
+                <field name="intervention_type"/>
+                <field name="intervention_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('executed', 'confirmed')"
+                       decoration-danger="state == 'cancelled'"
+                       decoration-info="state == 'transmitted'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+    
+    <record id="view_wg_intervention_form" model="ir.ui.view">
+        <field name="name">wg.intervention.form</field>
+        <field name="model">wg.intervention</field>
+        <field name="arch" type="xml">
+            <form string="Fiche d'intervention">
+                <header>
+                    <button name="action_transmit_to_technicien" 
+                            string="Transmettre au technicien" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="wg_management.group_commercial"/>
+                    <button name="action_start_intervention" 
+                            string="Démarrer l'intervention" 
+                            type="object" 
+                            class="btn-secondary"
+                            invisible="state != 'transmitted'"
+                            groups="wg_management.group_technicien"/>
+                    <button name="action_confirm_execution" 
+                            string="Confirmer l'exécution" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible="state not in ('transmitted', 'in_progress')"
+                            groups="wg_management.group_technicien"
+                            confirm="Êtes-vous sûr de vouloir confirmer l'exécution de cette intervention ?"/>
+                    <button name="action_confirm" 
+                            string="Archiver" 
+                            type="object" 
+                            class="btn-warning"
+                            invisible="state != 'executed'"
+                            groups="wg_management.group_commercial"
+                            confirm="Avez-vous bien contacté le client pour confirmer cette intervention ?"/>
+                    <button name="action_cancel" 
+                            string="Annuler" 
+                            type="object" 
+                            class="btn-secondary"
+                            invisible="state in ('executed', 'confirmed', 'cancelled')"
+                            confirm="Êtes-vous sûr de vouloir annuler cette intervention ?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,transmitted,in_progress,executed,confirmed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="partner_id" options="{'no_create': True}" required="True"/>
+                            <field name="sale_order_id" options="{'no_create': True}"/>
+                            <field name="contract_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="commercial_id" 
+                                   groups="wg_management.group_commercial"
+                                   options="{'no_create': True}"/>
+                            <field name="technicien_id" 
+                                   required="state != 'draft'"
+                                   options="{'no_create': True}"/>
+                            <field name="intervention_type" required="True"/>
+                            <field name="intervention_date" required="True"/>
+                            <field name="transmission_date" readonly="1" invisible="not transmission_date"/>
+                            <field name="execution_date" readonly="1" invisible="not execution_date"/>
+                            <field name="confirmation_date" readonly="1" invisible="not confirmation_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Décrire l'intervention à effectuer..."/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Notes additionnelles..."/>
+                        </page>
+                        <page string="Notes d'exécution" invisible="state != 'executed'">
+                            <field name="execution_notes" placeholder="Notes sur l'exécution de l'intervention..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_wg_intervention_search" model="ir.ui.view">
+        <field name="name">wg.intervention.search</field>
+        <field name="model">wg.intervention</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="commercial_id"/>
+                <field name="technicien_id"/>
+                <filter string="Brouillon" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Transmises" name="transmitted" domain="[('state', '=', 'transmitted')]"/>
+                <filter string="En cours" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Exécutées" name="executed" domain="[('state', '=', 'executed')]"/>
+                <filter string="Confirmées" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Annulées" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Mise en service" name="mise_en_service" domain="[('intervention_type', '=', 'mise_en_service')]"/>
+                <filter string="Installation" name="installation" domain="[('intervention_type', '=', 'installation')]"/>
+                <filter string="Maintenance" name="maintenance" domain="[('intervention_type', '=', 'maintenance')]"/>
+                <filter string="Réparation" name="reparation" domain="[('intervention_type', '=', 'reparation')]"/>
+                <separator/>
+                <filter string="Client" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                <filter string="Commercial" name="group_commercial" context="{'group_by': 'commercial_id'}"/>
+                <filter string="Technicien" name="group_technicien" context="{'group_by': 'technicien_id'}"/>
+                <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_wg_intervention" model="ir.actions.act_window">
+        <field name="name">Interventions</field>
+        <field name="res_model">wg.intervention</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_wg_intervention_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez une fiche d'intervention
+            </p>
+            <p>
+                Les fiches d'intervention permettent de gérer les interventions techniques pour la mise en service, l'installation, la maintenance et la réparation.
+            </p>
+        </field>
+    </record>
+    
+</odoo>
+

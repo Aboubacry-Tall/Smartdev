@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Privilège pour le module wg_management -->
+    <record model="res.groups.privilege" id="res_groups_privilege_wg_management">
+        <field name="name">WG Management</field>
+        <field name="category_id" ref="base.module_category_uncategorized"/>
+    </record>
+
+    <!-- Rôle Commercial -->
+    <record id="wg_management.group_commercial" model="res.groups">
+        <field name="name">Commercial</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_wg_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Accès aux fonctionnalités commerciales</field>
+    </record>
+
+    <!-- Rôle Technicien -->
+    <record id="wg_management.group_technicien" model="res.groups">
+        <field name="name">Technicien</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_wg_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Accès aux fonctionnalités techniques</field>
+    </record>
+
+    <!-- Rôle Financier -->
+    <record id="wg_management.group_financier" model="res.groups">
+        <field name="name">Financier</field>
+        <field name="sequence">30</field>
+        <field name="privilege_id" ref="res_groups_privilege_wg_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Accès aux fonctionnalités financières</field>
+    </record>
+
+    <!-- Rôle Admin - Accès à tout -->
+    <record id="wg_management.group_admin" model="res.groups">
+        <field name="name">Admin</field>
+        <field name="sequence">1</field>
+        <field name="privilege_id" ref="res_groups_privilege_wg_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('wg_management.group_commercial')), (4, ref('wg_management.group_technicien')), (4, ref('wg_management.group_financier'))]"/>
+        <field name="comment">Accès complet à toutes les fonctionnalités</field>
+    </record>
+
+</odoo>
+

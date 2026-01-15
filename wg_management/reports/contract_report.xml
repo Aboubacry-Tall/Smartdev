@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_contract_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="text-center">CONTRAT DE FOURNITURE D'INTERNET</h2>
+                                <hr/>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <h4>Informations du client</h4>
+                                <p><strong>Nom:</strong> <t t-esc="o.partner_id.name"/></p>
+                                <p t-if="o.partner_id.street"><strong>Adresse:</strong> <t t-esc="o.partner_id.street"/></p>
+                                <p t-if="o.partner_id.city"><strong>Ville:</strong> <t t-esc="o.partner_id.city"/></p>
+                                <p t-if="o.partner_id.phone"><strong>Téléphone:</strong> <t t-esc="o.partner_id.phone"/></p>
+                                <p t-if="o.partner_id.email"><strong>Email:</strong> <t t-esc="o.partner_id.email"/></p>
+                            </div>
+                            <div class="col-6">
+                                <h4>Informations du contrat</h4>
+                                <p><strong>Numéro de contrat:</strong> <t t-esc="o.name"/></p>
+                                <p><strong>Date de début:</strong> <t t-esc="o.start_date"/></p>
+                                <p><strong>Date de fin:</strong> <t t-esc="o.end_date"/></p>
+                                <p><strong>Durée:</strong> <t t-esc="o.duration_months"/> mois</p>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h4>Détails du service</h4>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Produit</th>
+                                            <th>Prix mensuel</th>
+                                            <th>Durée (mois)</th>
+                                            <th>Prix total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><t t-esc="o.product_id.name or 'N/A'"/></td>
+                                            <td><t t-esc="o.monthly_price"/> <t t-esc="o.env.company.currency_id.symbol"/></td>
+                                            <td><t t-esc="o.duration_months"/></td>
+                                            <td><t t-esc="o.total_price"/> <t t-esc="o.env.company.currency_id.symbol"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-4" t-if="o.invoice_id">
+                            <div class="col-12">
+                                <h4>Facture d'origine</h4>
+                                <p><strong>Numéro de facture:</strong> <t t-esc="o.invoice_id.name"/></p>
+                                <p t-if="o.sale_order_id"><strong>Devis:</strong> <t t-esc="o.sale_order_id.name"/></p>
+                            </div>
+                        </div>
+                        <div class="row mt-4" t-if="o.invoice_ids">
+                            <div class="col-12">
+                                <h4>Factures associées</h4>
+                                <ul>
+                                    <t t-foreach="o.invoice_ids" t-as="invoice">
+                                        <li><t t-esc="invoice.name"/> - <t t-esc="invoice.amount_total"/> <t t-esc="invoice.currency_id.symbol"/></li>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row mt-4" t-if="o.notes">
+                            <div class="col-12">
+                                <h4>Notes</h4>
+                                <p><t t-esc="o.notes"/></p>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <p><strong>Signature du client</strong></p>
+                                <br/><br/>
+                                <hr/>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Signature du fournisseur</strong></p>
+                                <br/><br/>
+                                <hr/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+    <record id="report_contract" model="ir.actions.report">
+        <field name="name">Contrat Internet</field>
+        <field name="model">wg.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">wg_management.report_contract_template</field>
+        <field name="report_file">wg_management.report_contract</field>
+        <field name="print_report_name">'CONTRAT - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="model_wg_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
+

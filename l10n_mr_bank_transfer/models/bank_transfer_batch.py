@@ -58,6 +58,29 @@ class BankTransferBatch(models.Model):
         default=lambda self: self.env.company.currency_id,
         required=True,
     )
+
+    transfer_type = fields.Selection(
+        [
+            ('simple', 'Virement Simple'),
+            ('transfer', 'Transfert (International)'),
+        ],
+        string='Type de virement',
+        default='simple',
+        tracking=True,
+        required=True,
+    )
+
+    source_account_id = fields.Many2one(
+        'res.partner.bank',
+        string='Compte source',
+        tracking=True,
+        help="Compte bancaire de l'entreprise à débiter (source).",
+    )
+
+    description = fields.Text(
+        string='Motif',
+        tracking=True,
+    )
     
     notes = fields.Text(string='Notes')
     
@@ -150,7 +173,16 @@ class BankTransferBatch(models.Model):
         }
 
     @api.model
-    def create_batch_from_versions(self, name, date, version_ids, source_currency_id=False):
+    def create_batch_from_versions(
+        self,
+        name,
+        date,
+        version_ids,
+        source_currency_id=False,
+        transfer_type='simple',
+        source_account_id=False,
+        description=False,
+    ):
         """
         Crée un lot de virement bancaire avec les versions (hr.version) sélectionnées
         
@@ -166,6 +198,9 @@ class BankTransferBatch(models.Model):
             'date': date,
             'source_currency_id': currency_id,
             'currency_id': currency_id,
+            'transfer_type': transfer_type or 'simple',
+            'source_account_id': int(source_account_id) if source_account_id else False,
+            'description': description or False,
         })
         
         # Récupérer les versions

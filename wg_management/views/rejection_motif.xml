@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rejection_motif_list" model="ir.ui.view">
+        <field name="name">rejection.motif.list</field>
+        <field name="model">rejection.motif</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    
+    <record id="view_rejection_motif_form" model="ir.ui.view">
+        <field name="name">rejection.motif.form</field>
+        <field name="model">rejection.motif</field>
+        <field name="arch" type="xml">
+            <form string="Motif de rejet">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Description du motif..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_rejection_motif_search" model="ir.ui.view">
+        <field name="name">rejection.motif.search</field>
+        <field name="model">rejection.motif</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter string="Actifs" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactifs" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_rejection_motif" model="ir.actions.act_window">
+        <field name="name">Motifs de rejet</field>
+        <field name="res_model">rejection.motif</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_rejection_motif_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez un motif de rejet
+            </p>
+            <p>
+                Les motifs de rejet permettent de catégoriser les raisons de rejet des devis.
+            </p>
+        </field>
+    </record>
+    
+</odoo>
+

@@ -51,6 +51,9 @@ export class BankTransferVersionListController extends ListController {
             const batchName = this.props.context.default_batch_name;
             const batchDate = this.props.context.default_batch_date;
             const sourceCurrencyId = this.props.context.default_source_currency_id;
+            const transferType = this.props.context.default_transfer_type;
+            const sourceAccountId = this.props.context.default_source_account_id;
+            const description = this.props.context.default_description;
             
             if (!batchName || !batchDate) {
                 this.notification.add(
@@ -70,6 +73,9 @@ export class BankTransferVersionListController extends ListController {
                     date: batchDate,
                     version_ids: selectedVersionIds,
                     source_currency_id: sourceCurrencyId,
+                    transfer_type: transferType,
+                    source_account_id: sourceAccountId,
+                    description: description,
                 }
             );
             
@@ -107,6 +113,9 @@ export class BankTransferVersionListController extends ListController {
         const batchName = this.props.context.default_batch_name;
         const batchDate = this.props.context.default_batch_date;
         const sourceCurrencyId = this.props.context.default_source_currency_id;
+        const transferType = this.props.context.default_transfer_type;
+        const sourceAccountId = this.props.context.default_source_account_id;
+        const description = this.props.context.default_description;
         
         return this.actionService.doAction({
             type: 'ir.actions.act_window',
@@ -117,6 +126,9 @@ export class BankTransferVersionListController extends ListController {
                 default_name: batchName,
                 default_date: batchDate,
                 default_source_currency_id: sourceCurrencyId,
+                default_transfer_type: transferType,
+                default_source_account_id: sourceAccountId,
+                default_description: description,
                 dialog_size: 'medium',
             },
         });
@@ -150,6 +162,9 @@ export class BankTransferVersionListController extends ListController {
                     date: batchDate,
                     source_currency_id: this.props.context.default_source_currency_id,
                     currency_id: this.props.context.default_source_currency_id,
+                    transfer_type: this.props.context.default_transfer_type,
+                    source_account_id: this.props.context.default_source_account_id,
+                    description: this.props.context.default_description,
                 }]
             );
             

@@ -77,6 +77,9 @@
                             type="object" 
                             class="oe_highlight"
                             invisible="state != 'draft'"/>
+                    <button name="action_print_order"
+                            string="Imprimer"
+                            type="object"/>
                     <button name="action_set_to_draft" 
                             string="Remettre en brouillon" 
                             type="object" 
@@ -103,8 +106,7 @@
                     <div class="alert alert-warning mb-3" role="alert"
                          invisible="not exchange_rate_date_mismatch">
                         <i class="fa fa-exclamation-triangle me-1"/>
-                        Attention : le <strong>taux de change utilisé</strong> ne correspond pas à la <strong>date de création du virement</strong>
-                        .Vérifiez vos taux journaliers dans <em>Devises</em>.
+                        Attention : le <strong>taux de change utilisé</strong> ne correspond pas à la <strong>date de création du virement</strong>.
                     </div>
 
                     <!-- En-tête avec photo employé -->
@@ -128,6 +130,7 @@
                         <group string="Montants">
                             <field name="currency_id" invisible="1"/>
                             <field name="source_currency_id" />
+                            <field name="transfer_type" readonly="state != 'draft'"/>
                             <field name="salaire" widget="monetary" />
                         </group>
                     </group>
