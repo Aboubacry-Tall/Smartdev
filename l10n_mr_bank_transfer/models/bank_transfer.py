@@ -117,7 +117,7 @@ class BankTransfer(models.Model):
         'res.currency',
         string='Devise source',
         related='batch_id.source_currency_id',
-        readonly=True,
+        readonly=False,
         store=True,
     )
     

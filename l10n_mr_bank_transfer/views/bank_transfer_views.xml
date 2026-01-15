@@ -120,7 +120,7 @@
                         </group>
                         <group string="Montants">
                             <field name="currency_id" invisible="1"/>
-                            <field name="source_currency_id" readonly="1"/>
+                            <field name="source_currency_id" />
                             <field name="salaire" widget="monetary" />
                         </group>
                     </group>
@@ -143,7 +143,12 @@
                                            widget="monetary" 
                                            sum="Total"
                                            decoration-bf="1"/>
+                                    <field name="amount_converted"
+                                           string="Montant converti"
+                                           widget="monetary"
+                                           readonly="1"/>
                                     <field name="currency_id" column_invisible="1"/>
+                                    <field name="destination_currency_id" column_invisible="1"/>
                                     <field name="notes" optional="hide"/>
                                 </list>
                             </field>

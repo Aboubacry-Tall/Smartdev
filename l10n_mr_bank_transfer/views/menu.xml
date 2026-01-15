@@ -4,6 +4,7 @@
         <field name="name">Devises</field>
         <field name="res_model">res.currency</field>
         <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
         <field name="view_id" ref="base.view_currency_tree"/>
     </record>
 
@@ -24,13 +25,13 @@
     <record id="action_bank_transfer_hr_employee_kanban" model="ir.actions.act_window">
         <field name="name">Employés</field>
         <field name="res_model">hr.employee</field>
-        <field name="view_mode">kanban,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="view_id" ref="hr.hr_kanban_view_employees"/>
     </record>
 
     <menuitem
         id="menu_bank_transfer_batch"
-        name="Virement"
+        name="Virements"
         web_icon="l10n_mr_bank_transfer,static/description/icon.png"
         sequence="110"/>
 
