@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.tools.float_utils import float_compare
 
 
 class BankTransferLine(models.Model):
@@ -76,6 +77,38 @@ class BankTransferLine(models.Model):
         readonly=True,
         help="Montant converti de la devise source vers la devise de la banque de destination selon le taux du jour.",
     )
+
+    exchange_rate_date = fields.Date(
+        string="Date du taux utilisé",
+        compute="_compute_exchange_rate_info",
+        store=False,
+        readonly=True,
+        help="Date du taux réellement utilisé par le système (dernier taux <= date de création du virement).",
+    )
+
+    exchange_rate_date_mismatch = fields.Boolean(
+        string="Décalage taux",
+        compute="_compute_exchange_rate_info",
+        store=False,
+        readonly=True,
+        help="Vrai si la date du taux réellement utilisé est différente de la date de création du virement.",
+    )
+
+    exchange_rate_used = fields.Float(
+        string="Taux utilisé",
+        compute="_compute_exchange_rate_info",
+        store=False,
+        readonly=True,
+        help="Taux de conversion utilisé pour ce virement (date = date de création du virement).",
+    )
+
+    exchange_rate_latest = fields.Float(
+        string="Dernier taux",
+        compute="_compute_exchange_rate_info",
+        store=False,
+        readonly=True,
+        help="Dernier taux de conversion disponible (date = aujourd'hui).",
+    )
     
     # Informations supplémentaires
     notes = fields.Text(string='Notes')
@@ -104,6 +137,7 @@ class BankTransferLine(models.Model):
         'destination_currency_id',
         'transfer_id.source_currency_id',
         'transfer_id.batch_id.date',
+        'transfer_id.create_date',
         'transfer_id.employee_id.company_id',
     )
     def _compute_amount_converted(self):
@@ -123,8 +157,84 @@ class BankTransferLine(models.Model):
                 continue
 
             company = line.transfer_id.employee_id.company_id or self.env.company
-            date = line.transfer_id.batch_id.date or fields.Date.context_today(line)
-            line.amount_converted = source_currency._convert(amount, dest_currency, company, date)
+            # Règle: toujours utiliser le taux du jour de création du virement.
+            transfer_date = (
+                fields.Date.to_date(line.transfer_id.create_date)
+                if line.transfer_id.create_date
+                else (line.transfer_id.batch_id.date or fields.Date.context_today(line))
+            )
+            line.amount_converted = source_currency._convert(amount, dest_currency, company, transfer_date)
+
+    @api.depends(
+        'amount',
+        'destination_currency_id',
+        'transfer_id.source_currency_id',
+        'transfer_id.currency_id',
+        'transfer_id.create_date',
+        'transfer_id.batch_id.date',
+        'transfer_id.employee_id.company_id',
+        'bank_account_id.currency_id',
+        'bank_id.country.currency_id',
+    )
+    def _compute_exchange_rate_info(self):
+        CurrencyRate = self.env['res.currency.rate']
+        for line in self:
+            company = line.transfer_id.employee_id.company_id or self.env.company
+            transfer_date = (
+                fields.Date.to_date(line.transfer_id.create_date)
+                if line.transfer_id.create_date
+                else (line.transfer_id.batch_id.date or fields.Date.context_today(line))
+            )
+            today = fields.Date.context_today(line)
+
+            source_currency = line.transfer_id.source_currency_id or line.currency_id
+            dest_currency = line.destination_currency_id
+
+            def _rate_date(currency):
+                if not currency:
+                    return False
+                rate = CurrencyRate.search(
+                    [
+                        ('currency_id', '=', currency.id),
+                        ('name', '<=', transfer_date),
+                        '|', ('company_id', '=', False), ('company_id', '=', company.id),
+                    ],
+                    order='name desc, id desc',
+                    limit=1,
+                )
+                return rate.name if rate else False
+
+            # En Odoo, la devise société n'a pas forcément de res.currency.rate ; on la considère "à la date du jour".
+            company_currency = company.currency_id
+            src_rate_date = transfer_date if source_currency == company_currency else _rate_date(source_currency)
+            dst_rate_date = transfer_date if dest_currency == company_currency else _rate_date(dest_currency)
+
+            # On garde une seule "date du taux" pour l'affichage : la plus récente des deux (source/destination)
+            used_rate_date = max(d for d in [src_rate_date, dst_rate_date] if d) if (src_rate_date or dst_rate_date) else False
+            line.exchange_rate_date = used_rate_date
+
+            # Alerte demandée: comparer le "dernier taux" réellement utilisé par le virement (date <= virement)
+            # à la date de création du virement. Si le taux date d'hier, on doit alerter.
+            if not source_currency or not dest_currency or source_currency == dest_currency:
+                line.exchange_rate_used = 1.0
+                line.exchange_rate_latest = 1.0
+                line.exchange_rate_date_mismatch = False
+                continue
+
+            used_rate = source_currency._get_conversion_rate(source_currency, dest_currency, company, transfer_date)
+            latest_rate = source_currency._get_conversion_rate(source_currency, dest_currency, company, today)
+
+            line.exchange_rate_used = used_rate
+            line.exchange_rate_latest = latest_rate
+
+            # mismatch si la date du taux réellement utilisé n'est pas celle du virement
+            # (ou si un taux manque -> _rate_date False)
+            line.exchange_rate_date_mismatch = bool(
+                (src_rate_date and src_rate_date != transfer_date) or
+                (dst_rate_date and dst_rate_date != transfer_date) or
+                (not src_rate_date and source_currency != company_currency) or
+                (not dst_rate_date and dest_currency != company_currency)
+            )
     
     @api.onchange('transfer_id')
     def _onchange_transfer_id(self):

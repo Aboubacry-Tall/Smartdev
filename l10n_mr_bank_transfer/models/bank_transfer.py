@@ -63,6 +63,14 @@ class BankTransfer(models.Model):
         'transfer_id',
         string='Répartition par compte'
     )
+
+    exchange_rate_date_mismatch = fields.Boolean(
+        string="Décalage taux de change",
+        compute="_compute_exchange_rate_date_mismatch",
+        store=False,
+        readonly=True,
+        help="Vrai si au moins une ligne utilise un taux (date virement) différent du dernier taux disponible.",
+    )
     
     # Champs related depuis les comptes bancaires
     bank_account_ids = fields.Many2many(
@@ -135,6 +143,11 @@ class BankTransfer(models.Model):
                 record.bank_account_ids = [(6, 0, record.employee_id.bank_account_ids.ids)]
             else:
                 record.bank_account_ids = [(5, 0, 0)]
+
+    @api.depends('transfer_line_ids.exchange_rate_date_mismatch')
+    def _compute_exchange_rate_date_mismatch(self):
+        for record in self:
+            record.exchange_rate_date_mismatch = any(record.transfer_line_ids.mapped('exchange_rate_date_mismatch'))
 
     @api.depends('employee_id', 'employee_id.bank_account_ids')
     def _compute_bank_account(self):
