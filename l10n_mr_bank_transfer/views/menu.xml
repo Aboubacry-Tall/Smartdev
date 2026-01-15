@@ -84,7 +84,7 @@
     <menuitem
         id="menu_bank_transfer_hr_employees"
         name="Employés"
-        parent="menu_bank_transfer_settings"
+        parent="menu_bank_transfer_batch"
         action="action_bank_transfer_hr_employee_kanban"
         sequence="40"/>
 </odoo>

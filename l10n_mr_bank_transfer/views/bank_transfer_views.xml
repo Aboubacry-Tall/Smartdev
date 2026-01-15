@@ -5,13 +5,12 @@
         <field name="name">bank.transfer.tree</field>
         <field name="model">bank.transfer</field>
         <field name="arch" type="xml">
-            <list string="Journal de virement bancaire" decoration-info="salaire_corrige &gt; salaire" decoration-warning="salaire_corrige &lt; salaire">
+            <list string="Journal de virement bancaire">
                 <field name="matricule"/>
                 <field name="name"/>
                 <field name="banques"/>
                 <field name="code_banque"/>
                 <field name="salaire" widget="monetary"/>
-                <field name="salaire_corrige" widget="monetary"/>
             </list>
         </field>
     </record>
@@ -53,7 +52,6 @@
                 <field name="bank_country_id" string="Pays" readonly="1" optional="hide"/>
                 <field name="bank_account_id" string="Compte bancaire" readonly="1" optional="hide"/>
                 <field name="salaire" widget="monetary" options="{'currency_field': 'currency_id'}" decoration-bf="1" optional="show" readonly="1"/>
-                <field name="salaire_corrige" widget="monetary" options="{'currency_field': 'currency_id'}" decoration-bf="1" optional="show"/>
                 <field name="state" widget="badge" 
                        decoration-info="state == 'draft'" 
                        decoration-success="state == 'done'"
@@ -73,8 +71,7 @@
                     <button name="action_regenerate_lines" 
                             string="Calculer la feuille" 
                             type="object" 
-                            class="oe_highlight"
-                            icon="fa-calculator"/>
+                            class="oe_highlight"/>
                     <button name="action_mark_as_paid" 
                             string="Confirmer" 
                             type="object" 
@@ -92,16 +89,28 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                 </header>
                 <sheet>
+                    <!-- Champs techniques pour conditions d'affichage -->
+                    <field name="bank_account_id" invisible="1"/>
+                    <field name="bank_account_ids" invisible="1"/>
+
+                     <div class="alert alert-danger mb-3" role="alert"
+                         invisible="not employee_id or bank_account_id">
+                        <i class="fa fa-exclamation-triangle me-1"/>
+                        L'employé sélectionné n'a <strong>aucun compte bancaire</strong>. Veuillez renseigner un compte bancaire
+                        avant de générer la répartition.
+                    </div>
+
                     <!-- En-tête avec photo employé -->
                     <div class="oe_title">
                         <label for="employee_id" class="oe_edit_only"/>
                         <h1>
                             <field name="employee_id" 
                                    widget="many2one_avatar_employee" 
-                                   options="{'no_create': True, 'no_create_edit': True}"
-                                   readonly="1"/>
+                                   options="{'no_create': True, 'no_create_edit': True}" />
                         </h1>
                     </div>
+
+                   
                     
                     <group>
                         <group string="Informations employé">
@@ -111,17 +120,15 @@
                         </group>
                         <group string="Montants">
                             <field name="currency_id" invisible="1"/>
+                            <field name="source_currency_id" readonly="1"/>
                             <field name="salaire" widget="monetary" />
-                            <field name="salaire_corrige" widget="monetary"/>
                         </group>
                     </group>
 
                     <!-- Notebook avec détails -->
                     <notebook>
                         <page string="Répartition par compte" name="transfer_lines">
-                            <div class="alert alert-info mb-3" role="alert">
-                                <i class="fa fa-info-circle"/> La répartition est générée automatiquement selon les montants configurés sur les comptes bancaires de l'employé.
-                            </div>
+                           
                             <field name="transfer_line_ids" nolabel="1">
                                 <list string="Montants par compte bancaire" editable="bottom">
                                     <field name="sequence" widget="handle"/>
@@ -153,10 +160,6 @@
                                     <div class="o_row">
                                         <field name="salaire" widget="monetary" readonly="1"/>
                                     </div>
-                                    <label for="salaire_corrige" string="Salaire corrigé"/>
-                                    <div class="o_row">
-                                        <field name="salaire_corrige" widget="monetary"/>
-                                    </div>
                                 </group>
                             </group>
                         </page>
@@ -184,8 +187,6 @@
                 <filter string="Payé" name="done" domain="[('state', '=', 'done')]"/>
                 <filter string="Annulé" name="cancel" domain="[('state', '=', 'cancel')]"/>
                 <separator/>
-                <filter string="Salaire corrigé renseigné" name="salaire_corrige_set" domain="[('salaire_corrige', '!=', False)]"/>
-                <separator/>
                 <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
                 <filter string="Banque" name="group_by_banque" context="{'group_by': 'banques'}"/>
                 <filter string="Code BIC" name="group_by_code_banque" context="{'group_by': 'code_banque'}"/>
@@ -211,7 +212,6 @@
                 <field name="matricule"/>
                 <field name="name"/>
                 <field name="salaire"/>
-                <field name="salaire_corrige"/>
                 <field name="currency_id"/>
                 <field name="state"/>
                 <field name="banques"/>
@@ -284,12 +284,7 @@
                                             <field name="salaire" widget="monetary"/>
                                         </div>
                                     </div>
-                                    <div class="text-end" t-if="record.salaire_corrige.raw_value">
-                                        <div class="text-muted small">Corrigé</div>
-                                        <div class="fs-5 fw-bold text-warning">
-                                            <field name="salaire_corrige" widget="monetary"/>
-                                        </div>
-                                    </div>
+                                    <!-- champ "salaire_corrige" supprimé -->
                                 </div>
                             </div>
                         </div>
@@ -308,7 +303,6 @@
                 <field name="employee_id" type="row"/>
                 <field name="state" type="col"/>
                 <field name="salaire" type="measure"/>
-                <field name="salaire_corrige" type="measure"/>
             </pivot>
         </field>
     </record>

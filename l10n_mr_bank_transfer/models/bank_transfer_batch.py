@@ -51,6 +51,13 @@ class BankTransferBatch(models.Model):
         string='Devise',
         default=lambda self: self.env.company.currency_id
     )
+
+    source_currency_id = fields.Many2one(
+        'res.currency',
+        string='Devise source',
+        default=lambda self: self.env.company.currency_id,
+        required=True,
+    )
     
     notes = fields.Text(string='Notes')
     
@@ -67,14 +74,13 @@ class BankTransferBatch(models.Model):
         for record in self:
             record.transfer_count = len(record.transfer_ids)
 
-    @api.depends('transfer_ids', 'transfer_ids.salaire_corrige', 'transfer_ids.salaire')
+    @api.depends('transfer_ids', 'transfer_ids.salaire')
     def _compute_total_amount(self):
         """Calcule le montant total du lot"""
         for record in self:
             total = 0.0
             for transfer in record.transfer_ids:
-                # Utiliser salaire_corrige s'il existe, sinon salaire
-                total += transfer.salaire_corrige or transfer.salaire or 0.0
+                total += transfer.salaire or 0.0
             record.total_amount = total
 
     def action_confirm(self):
@@ -144,7 +150,7 @@ class BankTransferBatch(models.Model):
         }
 
     @api.model
-    def create_batch_from_versions(self, name, date, version_ids):
+    def create_batch_from_versions(self, name, date, version_ids, source_currency_id=False):
         """
         Crée un lot de virement bancaire avec les versions (hr.version) sélectionnées
         
@@ -154,9 +160,12 @@ class BankTransferBatch(models.Model):
         :return: Dict avec l'ID du lot créé
         """
         # Créer le lot
+        currency_id = int(source_currency_id) if source_currency_id else self.env.company.currency_id.id
         batch = self.create({
             'name': name,
             'date': date,
+            'source_currency_id': currency_id,
+            'currency_id': currency_id,
         })
         
         # Récupérer les versions

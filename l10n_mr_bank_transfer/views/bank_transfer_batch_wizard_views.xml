@@ -21,6 +21,11 @@
                             </div>
                         </group>
                     </group>
+
+                    <!-- Pleine largeur en bas -->
+                    <group col="1">
+                        <field name="source_currency_id" string="Devise source" class="w-100"/>
+                    </group>
                 </sheet>
                 <footer>
                     <button string="Suivant" name="action_next" type="object" class="btn-primary" />

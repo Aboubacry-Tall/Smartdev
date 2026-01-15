@@ -50,6 +50,7 @@ export class BankTransferVersionListController extends ListController {
             // Récupérer les informations du lot depuis le contexte
             const batchName = this.props.context.default_batch_name;
             const batchDate = this.props.context.default_batch_date;
+            const sourceCurrencyId = this.props.context.default_source_currency_id;
             
             if (!batchName || !batchDate) {
                 this.notification.add(
@@ -68,6 +69,7 @@ export class BankTransferVersionListController extends ListController {
                     name: batchName,
                     date: batchDate,
                     version_ids: selectedVersionIds,
+                    source_currency_id: sourceCurrencyId,
                 }
             );
             
@@ -104,6 +106,7 @@ export class BankTransferVersionListController extends ListController {
     async onBack() {
         const batchName = this.props.context.default_batch_name;
         const batchDate = this.props.context.default_batch_date;
+        const sourceCurrencyId = this.props.context.default_source_currency_id;
         
         return this.actionService.doAction({
             type: 'ir.actions.act_window',
@@ -113,6 +116,7 @@ export class BankTransferVersionListController extends ListController {
             context: {
                 default_name: batchName,
                 default_date: batchDate,
+                default_source_currency_id: sourceCurrencyId,
                 dialog_size: 'medium',
             },
         });
@@ -144,6 +148,8 @@ export class BankTransferVersionListController extends ListController {
                 [{
                     name: batchName,
                     date: batchDate,
+                    source_currency_id: this.props.context.default_source_currency_id,
+                    currency_id: this.props.context.default_source_currency_id,
                 }]
             );
             

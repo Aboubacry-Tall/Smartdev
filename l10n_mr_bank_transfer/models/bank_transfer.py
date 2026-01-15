@@ -105,15 +105,20 @@ class BankTransfer(models.Model):
         help='Salaire net à payer provenant du fichier Excel'
     )
     
-    salaire_corrige = fields.Monetary(
-        string='Salaire corrigé',
-        currency_field='currency_id'
-    )
-    
     currency_id = fields.Many2one(
         'res.currency',
         string='Devise',
-        default=lambda self: self.env.company.currency_id
+        related='batch_id.currency_id',
+        readonly=True,
+        store=True,
+    )
+
+    source_currency_id = fields.Many2one(
+        'res.currency',
+        string='Devise source',
+        related='batch_id.source_currency_id',
+        readonly=True,
+        store=True,
     )
     
     state = fields.Selection([
@@ -210,7 +215,7 @@ class BankTransfer(models.Model):
         # Supprimer les lignes existantes si on régénère
         self.transfer_line_ids.unlink()
         
-        # Récupérer le salaire à répartir (uniquement salaire, pas salaire_corrige)
+        # Récupérer le salaire à répartir
         salaire_a_repartir = self.salaire
         
         # Si pas de salaire défini, essayer de récupérer depuis hr.version

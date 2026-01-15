@@ -188,7 +188,6 @@
                                     <field name="banques" readonly="1"/>
                                     <field name="code_banque" readonly="1"/>
                                     <field name="salaire" sum="Total" widget="monetary" readonly="1"/>
-                                    <field name="salaire_corrige" sum="Total corrigé" widget="monetary"/>
                                     <field name="currency_id" column_invisible="1"/>
                                 </list>
                             </field>
@@ -265,7 +264,6 @@
                                     <field name="banques"/>
                                     <field name="code_banque"/>
                                     <field name="salaire" sum="Total"/>
-                                    <field name="salaire_corrige" sum="Total corrigé"/>
                                     <field name="currency_id" column_invisible="1"/>
                                 </list>
                             </field>

@@ -95,14 +95,7 @@
                             </tbody>
                         </table>
 
-                        <!-- Note si salaire corrigé -->
-                        <t t-if="o.salaire_corrige">
-                            <div class="alert alert-warning mt-3">
-                                <strong>Note:</strong> Salaire corrigé: 
-                                <span t-field="o.salaire_corrige" 
-                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                            </div>
-                        </t>
+                        <!-- Note: champ "salaire_corrige" supprimé -->
                     </div>
                 </t>
             </t>

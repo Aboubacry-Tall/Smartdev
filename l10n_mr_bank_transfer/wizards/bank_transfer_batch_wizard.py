@@ -17,6 +17,13 @@ class BankTransferBatchWizardStep1(models.TransientModel):
         default=fields.Date.today
     )
 
+    source_currency_id = fields.Many2one(
+        'res.currency',
+        string='Devise source',
+        required=True,
+        default=lambda self: self.env.company.currency_id,
+    )
+
     @api.model
     def _default_name(self):
         """Génère un nom par défaut pour le lot"""
@@ -36,6 +43,7 @@ class BankTransferBatchWizardStep1(models.TransientModel):
             'context': {
                 'default_batch_name': self.name,
                 'default_batch_date': self.date,
+                'default_source_currency_id': self.source_currency_id.id,
                 'dialog_size': 'extra-large',
             },
         }
@@ -107,6 +115,13 @@ class BankTransferBatchWizardStep2(models.TransientModel):
         required=True,
         readonly=True
     )
+
+    source_currency_id = fields.Many2one(
+        'res.currency',
+        string='Devise source',
+        required=True,
+        readonly=True,
+    )
     
     employee_line_ids = fields.One2many(
         'bank.transfer.batch.wizard.employee.line',
@@ -131,10 +146,12 @@ class BankTransferBatchWizardStep2(models.TransientModel):
         res = super().default_get(fields_list)
         
         # Récupérer les valeurs de l'étape 1
-        if 'name' in self.env.context:
-            res['name'] = self.env.context.get('default_name')
-        if 'date' in self.env.context:
-            res['date'] = self.env.context.get('default_date')
+        if self.env.context.get('default_batch_name'):
+            res['name'] = self.env.context.get('default_batch_name')
+        if self.env.context.get('default_batch_date'):
+            res['date'] = self.env.context.get('default_batch_date')
+        if self.env.context.get('default_source_currency_id'):
+            res['source_currency_id'] = self.env.context.get('default_source_currency_id')
         
         # Charger les employés avec contrat actif
         if 'employee_line_ids' in fields_list:
@@ -183,6 +200,8 @@ class BankTransferBatchWizardStep2(models.TransientModel):
         batch = self.env['bank.transfer.batch'].create({
             'name': self.name,
             'date': self.date,
+            'source_currency_id': self.source_currency_id.id,
+            'currency_id': self.source_currency_id.id,
         })
         
         # Créer les virements pour chaque employé sélectionné
