@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue Liste des Catégories -->
+        <record id="view_beneficiary_category_list" model="ir.ui.view">
+            <field name="name">beneficiary.category.list</field>
+            <field name="model">beneficiary.category</field>
+            <field name="arch" type="xml">
+                <list string="Catégories de Bénéficiaires">
+                    <field name="name"/>
+                    <field name="description"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire des Catégories -->
+        <record id="view_beneficiary_category_form" model="ir.ui.view">
+            <field name="name">beneficiary.category.form</field>
+            <field name="model">beneficiary.category</field>
+            <field name="arch" type="xml">
+                <form string="Catégorie de Bénéficiaire">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_beneficiaries" icon="fa-users">
+                                <field name="beneficiary_count" widget="statinfo" string="Bénéficiaires"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de la Catégorie"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="description" placeholder="Description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Recherche des Catégories -->
+        <record id="view_beneficiary_category_search" model="ir.ui.view">
+            <field name="name">beneficiary.category.search</field>
+            <field name="model">beneficiary.category</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher des Catégories">
+                    <field name="name"/>
+                    <field name="description"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Category Kanban View -->
+       
+
+        <!-- Action des Catégories -->
+        <record id="action_beneficiary_category" model="ir.actions.act_window">
+            <field name="name">Catégories de Bénéficiaires</field>
+            <field name="res_model">beneficiary.category</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_beneficiary_category_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle catégorie de bénéficiaire
+                </p>
+                <p>
+                    Les catégories vous aident à organiser et classer vos bénéficiaires pour une meilleure gestion et reporting.
+                </p>
+            </field>
+        </record>
+
+      
+        
+
+    </data>
+</odoo>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Odoo - Gestion des Virements</title>
+    <!-- CSS dependencies -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .oe_container { padding: 60px 15px; }
+        .oe_dark { background: #eaeef1; }
+        .oe_light { background: #fff; }
+        .oe_slogan { font-family: Quicksand, sans-serif; }
+        .img-border { border: 1px solid #CBCBCB; border-radius: 4px; }
+        .section-title { font-size: 32px; margin-bottom: 20px; }
+        .subsection-title { font-size: 24px; margin-top: 30px; margin-bottom: 15px; }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 15px; color: #28a745; }
+        .card { transition: transform 0.3s ease; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+        .bg-gradient-primary { background: linear-gradient(135deg, #007bff, #6610f2); }
+        .bg-gradient-success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .bg-gradient-info { background: linear-gradient(135deg, #17a2b8, #0dcaf0); }
+        .bg-gradient-warning { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+        .text-shadow { text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+        .rounded-lg { border-radius: 0.5rem !important; }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="oe_container oe_dark text-center rounded-lg py-5">
+    <div class="container">
+        <h1 class="oe_slogan section-title text-shadow"><b>Module Odoo - Gestion des Virements</b></h1>
+        <p class="oe_slogan lead mb-4">
+            Gérez vos opérations de virements bancaires (nationaux, interbancaires, salariaux et internationaux) de manière sécurisée et traçable.
+        </p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow border-0">
+                    <div class="card-body p-0">
+                        <img src="list_virements.png" alt="Module Gestion des Virements" class="img-fluid rounded-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Périmètre Fonctionnel -->
+<section class="oe_container oe_light py-5">
+    <div class="container">
+        <div class="card shadow-sm rounded-lg">
+            <div class="card-header bg-gradient-success text-white">
+                <h3 class="mb-0"><i class="fa fa-cogs"></i> Périmètre Fonctionnel</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="subsection-title"><b>Types de Virements Pris en Charge</b></h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr><th>Code</th><th>Type</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>VS</td><td>Virement Simple</td><td>Virement ponctuel vers un bénéficiaire.</td></tr>
+                            <tr><td>VM</td><td>Virement Multiple</td><td>Traitement groupé (salaires, prestataires).</td></tr>
+                            <tr><td>VIB</td><td>Virement Interbancaire</td><td>Transfert entre comptes internes de la SOGEM.</td></tr>
+                            <tr><td>TRF</td><td>Transfert International</td><td>Virement en devise étrangère (SWIFT/SEPA).</td></tr>
+                            <tr><td>MR</td><td>Virement Ouguiya (MRO)</td><td>Virement en monnaie locale nationale ou internationale.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 class="subsection-title"><b>Fonctionnalités Clés</b></h4>
+                <div class="row">
+                    <div class="col-md-3 text-center mb-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h5>Gestion Bancaire</h5>
+                        <p>Gestion complète des comptes bancaires avec tableau de bord intégré.</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5>Bénéficiaires</h5>
+                        <p>Catégorisation des bénéficiaires (Salariés, Fournisseurs, Partenaires).</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h5>Workflow Intuitif</h5>
+                        <p>Suivi des virements : Brouillon → Confirmé → Effectué → Annulé.</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <h5>Exports Avancés</h5>
+                        <p>Impression PDF/Excel des ordres de virement et bordereaux groupés.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fonctionnement Numerote -->
+<section class="oe_container oe_light py-5">
+    <div class="container">
+        <div class="card shadow-sm rounded-lg">
+            <div class="card-header bg-gradient-info text-white">
+                <h3 class="mb-0"><i class="fa fa-play-circle"></i> Fonctionnement</h3>
+            </div>
+            <div class="card-body">
+
+                <!-- Création des Entités -->
+                <h4 class="subsection-title">1. Gestion des Banques</h4>
+                <div class="text-center mb-4">
+                    <img class="img-border img-fluid rounded-lg shadow-sm" src="list_bank.png" alt="Liste des banques">
+                </div>
+
+                <h4 class="subsection-title">2. Gestion des Bénéficiaires</h4>
+                <div class="row mb-4">
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="liste_beneficaires.png" alt="Liste des bénéficiaires">
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="beneficaire_form.png" alt="Formulaire de bénéficiaire">
+                    </div>
+                </div>
+
+                <h4 class="subsection-title">3. Gestion des Comptes Bancaires</h4>
+                <div class="row mb-4">
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="list_compte_bank.png" alt="Liste des comptes bancaires">
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="compte_bank.png" alt="Formulaire de compte bancaire">
+                    </div>
+                </div>
+
+                <!-- Création des Virements -->
+                <h4 class="subsection-title">4. Création des Virements</h4>
+                <div class="row mb-4">
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="list_virements.png" alt="Liste des virements">
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="type_virements.png" alt="Types de virements">
+                    </div>
+                </div>
+
+                <!-- Bordereaux -->
+                <h4 class="subsection-title">5. Impression et Suivi des Bordereaux</h4>
+                <div class="text-center mb-4">
+                    <img class="img-border img-fluid rounded-lg shadow-sm" src="borderaux.png" alt="Bordereaux groupés">
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="borderaux_bank1.png" alt="Bordereau banque 1">
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <img class="img-border img-fluid rounded-lg shadow-sm" src="borderaux_bank2.png" alt="Bordereau banque 2">
+                    </div>
+                </div>
+
+                <div class="text-center mb-4">
+                    <img class="img-border img-fluid rounded-lg shadow-sm" src="transfere.png" alt="Transfert effectué">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Aide & Support -->
+<section class="oe_container oe_light text-center py-5">
+    <div class="container">
+        <div class="card shadow-sm rounded-lg">
+            <div class="card-header bg-gradient-primary text-white">
+                <h3 class="mb-0"><i class="fa fa-life-ring"></i> Aide & Support</h3>
+            </div>
+            <div class="card-body">
+                <p class="lead">Pour toute question ou assistance, contactez-nous à :</p>
+                <a href="mailto:contact@smartmssa.com" class="btn btn-primary btn-lg">
+                    <i class="fa fa-envelope mr-2"></i>contact@smartmssa.com
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- JS dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue pour l'historique des virements par bénéficiaire -->
+    <record id="view_beneficiary_transfer_history_list" model="ir.ui.view">
+        <field name="name">sogem.transfer.beneficiary.history.list</field>
+        <field name="model">sogem.transfer.line</field>
+        <field name="arch" type="xml">
+            <list string="Historique des virements" create="false" delete="false">
+                <field name="transfer_id"/>
+                <field name="beneficiary_id"/>
+                <field name="account_id"/>
+                <field name="amount" sum="Total"/>
+                <field name="description"/>
+                <field name="transfer_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_beneficiary_transfer_history_search" model="ir.ui.view">
+        <field name="name">sogem.transfer.beneficiary.history.search</field>
+        <field name="model">sogem.transfer.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="beneficiary_id"/>
+                <field name="account_id"/>
+                <field name="description"/>
+                <field name="transfer_id"/>
+                <filter name="my_transfers" string="Mes virements" domain="[('create_uid', '=', uid)]"/>
+                <separator/>
+                <filter name="today" string="Aujourd'hui" domain="[('transfer_id.date', '=', context_today())]"/>
+                <filter name="this_week" string="Cette semaine" domain="[('transfer_id.date', '&gt;=', (context_today() + relativedelta(weeks=-1, days=1, weekday=0)).strftime('%Y-%m-%d')), ('transfer_id.date', '&lt;=', (context_today() + relativedelta(weekday=6)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_month" string="Ce mois" domain="[('transfer_id.date', '&gt;=', context_today().strftime('%Y-%m-01')), ('transfer_id.date', '&lt;=', (context_today() + relativedelta(months=1, day=1, days=-1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Cette année" domain="[('transfer_id.date', '&gt;=', context_today().strftime('%Y-01-01')), ('transfer_id.date', '&lt;=', context_today().strftime('%Y-12-31'))]"/>
+                <separator/>
+                <filter string="Virements effectués" name="done" domain="[('transfer_id.state', '=', 'done')]"/>
+                <group>
+                    <filter string="Bénéficiaire" name="beneficiary" context="{'group_by': 'beneficiary_id'}"/>
+                    <filter string="Compte" name="account" context="{'group_by': 'account_id'}"/>
+                    
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vue pivot pour les statistiques par bénéficiaire -->
+    <record id="view_beneficiary_transfer_pivot" model="ir.ui.view">
+        <field name="name">sogem.transfer.beneficiary.pivot</field>
+        <field name="model">sogem.transfer.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des virements par bénéficiaire" sample="1">
+                <field name="beneficiary_id" type="row"/>
+                <field name="transfer_id" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vue graphique pour les statistiques par bénéficiaire -->
+    <record id="view_beneficiary_transfer_graph" model="ir.ui.view">
+        <field name="name">sogem.transfer.beneficiary.graph</field>
+        <field name="model">sogem.transfer.line</field>
+        <field name="arch" type="xml">
+            <graph string="Analyse des virements par bénéficiaire" type="bar" sample="1">
+                <field name="beneficiary_id"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Action pour l'historique des virements par bénéficiaire -->
+    <record id="action_beneficiary_transfer_history" model="ir.actions.act_window">
+        <field name="name">Analyse des virements par bénéficiaire</field>
+        <field name="res_model">sogem.transfer.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="context">{
+            'search_default_this_month': 1,
+            'search_default_beneficiary': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun historique de virement trouvé
+            </p>
+            <p>
+                Cette vue affiche l'historique complet des virements par bénéficiaire.
+            </p>
+        </field>
+    </record>
+
+
+   
+
+   
+
+    
+
+    
+
+</odoo> 

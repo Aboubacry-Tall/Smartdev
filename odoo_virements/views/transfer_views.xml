@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue formulaire pour les virements -->
+    <record id="view_sogem_transfer_form" model="ir.ui.view">
+        <field name="name">sogem.transfer.form</field>
+        <field name="model">sogem.transfer</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                    <button name="action_confirm" 
+                            type="object" 
+                            string="Confirmer" 
+                            class="oe_highlight btn-primary"
+                            icon="fa-check" 
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_done" 
+                            type="object" 
+                            string="Terminer" 
+                            class="oe_highlight btn-success"
+                            icon="fa-flag-checkered"
+                            invisible="state != 'confirmed'"/>
+
+                    <button name="action_cancel" 
+                            type="object" 
+                            string="Annuler"
+                            class="btn-danger"
+                            icon="fa-times"
+                            invisible="state in ('done', 'cancelled')"/>
+
+                    <button name="action_draft" 
+                            type="object" 
+                            string="Remettre en brouillon"
+                            class="btn-default"
+                            icon="fa-pencil"
+                            invisible="state == 'draft'"/>
+
+                    <button name="action_print_simple" 
+                            type="object" 
+                            string="Imprimer"
+                            icon="fa-print"
+                            class="btn-info"/>
+
+                    <button name="%(action_import_transfer_lines_wizard)d" 
+                            type="action"
+                            string="Importer lignes de virement" 
+                            icon="fa-upload"
+                            class="btn-secondary" 
+                            invisible="state != 'draft'"/>
+
+                    <field name="state" 
+                           widget="statusbar" 
+                           statusbar_visible="draft,confirmed,cancel"/>
+
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="source_account_id" readonly="state != 'draft'" options="{'no_create': True, 'no_quick_create': True}"/>
+                            <field name="transfer_type" readonly="state != 'draft'"/>
+                            <field name="transfer_subtype" readonly="state != 'draft'"/>
+                            <field name="currency_id" required="True" options="{'no_create': True, 'no_quick_create': True}"/>
+                            <field name="amount_total" readonly="1"/>
+                        </group>
+                        <group >
+
+                            <field name="description" string="Motif" readonly="state != 'draft'"/>
+                            <!--  <field name="beneficiary_address" readonly="1" /> -->
+                            <!-- <field name="beneficiary_bank" readonly="1"/>
+                            <field name="iban" readonly="1" />
+                            <field name="bic" readonly="1" /> -->
+                        </group>
+                        <!-- <group>
+                            <field name="destination_account_id_account_id" />
+                            <field name="destination_account_id_account_number" />
+
+                        </group> -->
+                    </group>
+                    <notebook>
+
+                        <page string="Bénéficiaires">
+                            <field name="transfer_line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="beneficiary_id" options="{'no_create': True, 'no_quick_create': True}"/>
+                                    <field name="amount" string="Montant"/>
+                                    <field name="account_id" options="{'no_create': True, 'no_quick_create': True}"/>
+                                    <!-- <field name="account_number" /> -->
+                                    <field name="description" string="Motif" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour les virements -->
+    <record id="view_sogem_transfer_list" model="ir.ui.view">
+        <field name="name">sogem.transfer.list</field>
+        <field name="model">sogem.transfer</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="source_account_id"/>
+                <field name="transfer_type"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue recherche pour les virements -->
+    <record id="view_sogem_transfer_search" model="ir.ui.view">
+        <field name="name">sogem.transfer.search</field>
+        <field name="model">sogem.transfer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="source_account_id"/>
+                <!-- <field name="beneficiary_id"/> -->
+                <filter string="Virement Simple" name="simple" domain="[('transfer_type', '=', 'simple')]"/>
+                <filter string="Virement Multiple" name="multiple" domain="[('transfer_type', '=', 'multiple')]"/>
+                <filter string="Transfere" name="transfere" domain="[('transfer_type', '=', 'tranfere')]"/>
+                <filter string="Virement Interbank" name="interbank" domain="[('transfer_type', '=', 'interbank')]"/>
+                <filter string="Brouillon" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmé" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Effectué" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Annulé" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <group>
+                    <filter string="Type de virement" name="transfer_type" context="{'group_by':'transfer_type'}"/>
+                    <filter string="État" name="state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vue pivot pour les virements -->
+    <record id="view_sogem_transfer_pivot" model="ir.ui.view">
+        <field name="name">sogem.transfer.pivot</field>
+        <field name="model">sogem.transfer</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des virements">
+                <field name="date" type="row"/>
+                <field name="transfer_type" type="col"/>
+                <!-- <field name="amount" type="measure"/> -->
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vue graphique pour les virements -->
+    <record id="view_sogem_transfer_graph" model="ir.ui.view">
+        <field name="name">sogem.transfer.graph</field>
+        <field name="model">sogem.transfer</field>
+        <field name="arch" type="xml">
+            <graph string="Analyse des virements">
+                <field name="date"/>
+                <!-- <field name="amount" type="measure"/> -->
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vue kanban pour les virements -->
+    <record id="view_sogem_transfer_kanban" model="ir.ui.view">
+        <field name="name">sogem.transfer.kanban</field>
+        <field name="model">sogem.transfer</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="source_account_id"/>
+                <field name="transfer_type"/>
+                <!-- <field name="beneficiary_id"/>
+                <field name="amount"/> -->
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <!-- <field name="amount" widget="monetary"/> -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <!-- <field name="beneficiary_id"/> -->
+                                </div>
+                                <div class="col-6 text-end">
+                                    <field name="date"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <field name="source_account_id"/>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <field name="state" widget="label_selection" options="{'classes': {'draft': 'info', 'confirmed': 'warning', 'done': 'success', 'cancelled': 'danger'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action pour les virements -->
+    <record id="action_sogem_all_virements" model="ir.actions.act_window">
+        <field name="name">Tous les Virements</field>
+        <field name="res_model">sogem.transfer</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+    </record>
+
+    <record id="action_sogem_transfer_simple" model="ir.actions.act_window">
+        <field name="name">Virements Simples</field>
+        <field name="res_model">sogem.transfer</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="domain">[('transfer_type', '=', "simple")]</field>
+
+    </record>
+
+    <record id="action_sogem_transfer_multiple" model="ir.actions.act_window">
+        <field name="name">Virements Multiples</field>
+        <field name="res_model">sogem.transfer</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="domain">[('transfer_type', '=', "multiple")]</field>
+
+    </record>
+
+    <record id="action_sogem_transfer_interbancaire" model="ir.actions.act_window">
+        <field name="name">Virements Interbancaires</field>
+        <field name="res_model">sogem.transfer</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="domain">[('transfer_type', '=', "interbank")]</field>
+
+    </record>
+
+    <record id="action_sogem_transfer" model="ir.actions.act_window">
+        <field name="name">Transferts</field>
+        <field name="res_model">sogem.transfer</field>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="domain">[('transfer_type', '=', "transfer")]</field>
+
+    </record>
+</odoo>

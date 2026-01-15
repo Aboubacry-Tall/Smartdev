@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Vue liste simple (ancienne) -->
+    <record id="view_bank_transfer_tree" model="ir.ui.view">
+        <field name="name">bank.transfer.tree</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <list string="Journal de virement bancaire" decoration-info="salaire_corrige &gt; salaire" decoration-warning="salaire_corrige &lt; salaire">
+                <field name="matricule"/>
+                <field name="name"/>
+                <field name="banques"/>
+                <field name="code_banque"/>
+                <field name="salaire" widget="monetary"/>
+                <field name="salaire_corrige" widget="monetary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue liste éditable avec header (style hr_payroll) -->
+    <record id="view_bank_transfer_list_batch" model="ir.ui.view">
+        <field name="name">bank.transfer.list.batch</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <list string="Virements bancaires" 
+                  edit="1" 
+                  sample="1" 
+                  multi_edit="1" 
+                  duplicate="0"
+                  js_class="bank_transfer_editable_list">
+                <header>
+                    <button name="action_print_report_pdf" 
+                            string="Rapport" 
+                            type="object" 
+                            class="btn-primary"
+                            icon="fa-file-pdf-o"
+                            help="Rapport PDF avec toutes les banques groupées"/>
+                    <button name="action_export_report_excel" 
+                            string="Journal de banque" 
+                            type="object" 
+                            class="btn-success"
+                            icon="fa-file-excel-o"
+                            help="Export Excel d'une banque (selon filtre)"/>
+                </header>
+                <field name="batch_id" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="employee_id" widget="many2one_avatar_employee" readonly="1"/>
+                <field name="matricule" readonly="1" optional="show"/>
+                <field name="name" readonly="1" optional="show"/>
+                <field name="job_title" string="Poste" readonly="1" optional="hide"/>
+                <field name="department_id" string="Département" readonly="1" optional="hide"/>
+                <field name="banques" readonly="1" optional="show"/>
+                <field name="code_banque" string="Code BIC" readonly="1" optional="show"/>
+                <field name="bank_country_id" string="Pays" readonly="1" optional="hide"/>
+                <field name="bank_account_id" string="Compte bancaire" readonly="1" optional="hide"/>
+                <field name="salaire" widget="monetary" options="{'currency_field': 'currency_id'}" decoration-bf="1" optional="show" readonly="1"/>
+                <field name="salaire_corrige" widget="monetary" options="{'currency_field': 'currency_id'}" decoration-bf="1" optional="show"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'draft'" 
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancel'"
+                       optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue formulaire améliorée -->
+    <record id="view_bank_transfer_form" model="ir.ui.view">
+        <field name="name">bank.transfer.form</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Virement bancaire">
+                <header>
+                    <button name="action_regenerate_lines" 
+                            string="Calculer la feuille" 
+                            type="object" 
+                            class="oe_highlight"
+                            icon="fa-calculator"/>
+                    <button name="action_mark_as_paid" 
+                            string="Confirmer" 
+                            type="object" 
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_set_to_draft" 
+                            string="Remettre en brouillon" 
+                            type="object" 
+                            invisible="state == 'draft'"/>
+                    <button name="action_cancel" 
+                            string="Annuler" 
+                            type="object" 
+                            invisible="state == 'cancel'"
+                            confirm="Êtes-vous sûr de vouloir annuler ce virement ?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <!-- En-tête avec photo employé -->
+                    <div class="oe_title">
+                        <label for="employee_id" class="oe_edit_only"/>
+                        <h1>
+                            <field name="employee_id" 
+                                   widget="many2one_avatar_employee" 
+                                   options="{'no_create': True, 'no_create_edit': True}"
+                                   readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Informations employé">
+                            <field name="matricule" readonly="1"/>
+                            <field name="job_title" string="Poste" readonly="1"/>
+                            <field name="department_id" string="Département" readonly="1"/>
+                        </group>
+                        <group string="Montants">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="salaire" widget="monetary" />
+                            <field name="salaire_corrige" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <!-- Notebook avec détails -->
+                    <notebook>
+                        <page string="Répartition par compte" name="transfer_lines">
+                            <div class="alert alert-info mb-3" role="alert">
+                                <i class="fa fa-info-circle"/> La répartition est générée automatiquement selon les montants configurés sur les comptes bancaires de l'employé.
+                            </div>
+                            <field name="transfer_line_ids" nolabel="1">
+                                <list string="Montants par compte bancaire" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="bank_account_id" 
+                                           options="{'no_create': True}"
+                                           domain="[('id', 'in', parent.bank_account_ids)]"/>
+                                    <field name="bank_id" readonly="1"/>
+                                    <field name="acc_number" readonly="1"/>
+                                    <field name="bank_bic" readonly="1" optional="hide"/>
+                                    <field name="amount" 
+                                           string="Montant à virer" 
+                                           widget="monetary" 
+                                           sum="Total"
+                                           decoration-bf="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="notes" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Informations" name="info">
+                            <group>
+                                <group string="Détails du virement">
+                                    <field name="matricule" readonly="1"/>
+                                    <field name="name" readonly="1"/>
+                                </group>
+                                <group string="Calculs">
+                                    <label for="salaire" string="Salaire net à payer"/>
+                                    <div class="o_row">
+                                        <field name="salaire" widget="monetary" readonly="1"/>
+                                    </div>
+                                    <label for="salaire_corrige" string="Salaire corrigé"/>
+                                    <div class="o_row">
+                                        <field name="salaire_corrige" widget="monetary"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue recherche -->
+    <record id="view_bank_transfer_search" model="ir.ui.view">
+        <field name="name">bank.transfer.search</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="matricule"/>
+                <field name="name"/>
+                <field name="banques"/>
+                <field name="code_banque" string="Code BIC"/>
+                <field name="bank_country_id" string="Pays de la banque"/>
+                <field name="employee_id"/>
+                <field name="batch_id"/>
+                <filter string="Brouillon" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Payé" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Annulé" name="cancel" domain="[('state', '=', 'cancel')]"/>
+                <separator/>
+                <filter string="Salaire corrigé renseigné" name="salaire_corrige_set" domain="[('salaire_corrige', '!=', False)]"/>
+                <separator/>
+                <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                <filter string="Banque" name="group_by_banque" context="{'group_by': 'banques'}"/>
+                <filter string="Code BIC" name="group_by_code_banque" context="{'group_by': 'code_banque'}"/>
+                <filter string="Pays de la banque" name="group_by_country" context="{'group_by': 'bank_country_id'}"/>
+                <filter string="Employé" name="group_by_employee" context="{'group_by': 'employee_id'}"/>
+                <filter string="Lot" name="group_by_batch" context="{'group_by': 'batch_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vue Kanban - Design épuré -->
+    <record id="view_bank_transfer_kanban" model="ir.ui.view">
+        <field name="name">bank.transfer.kanban</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <kanban
+                default_order="matricule"
+                default_group_by="state"
+                quick_create="0"
+                records_draggable="0"
+                group_create="false">
+                <field name="employee_id"/>
+                <field name="matricule"/>
+                <field name="name"/>
+                <field name="salaire"/>
+                <field name="salaire_corrige"/>
+                <field name="currency_id"/>
+                <field name="state"/>
+                <field name="banques"/>
+                <field name="job_title"/>
+                <templates>
+                    <t t-name="menu" class="d-flex flex-column">
+                        <button name="action_regenerate_lines" 
+                                type="object" 
+                                class="btn oe_highlight m-1" 
+                                string="Calculer la feuille"
+                                icon="fa-calculator"/>
+                        <button name="action_mark_as_paid" 
+                                type="object" 
+                                class="btn btn-success m-1" 
+                                string="Confirmer" 
+                                invisible="state != 'draft'"/>
+                        <button name="action_set_to_draft" 
+                                type="object" 
+                                class="btn btn-secondary m-1" 
+                                string="Remettre en brouillon" 
+                                invisible="state == 'draft'"/>
+                        <button name="action_cancel" 
+                                type="object" 
+                                class="btn text-danger m-1" 
+                                string="Annuler"
+                                invisible="state == 'cancel'"/>
+                    </t>
+                    <t t-name="card" class="o_kanban_card cursor-pointer w-100 mb-2">
+                        <div class="d-flex flex-column gap-2 p-3">
+                            <!-- En-tête: Avatar, Nom et État -->
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="d-flex align-items-center flex-grow-1">
+                                    <div class="me-3">
+                                        <field name="employee_id" widget="many2one_avatar_employee"/>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fs-5 fw-bold text-truncate">
+                                            <field name="name"/>
+                                        </div>
+                                        <div class="text-muted small mt-1">
+                                            <i class="fa fa-id-card me-1"/>
+                                            <field name="matricule"/>
+                                            <t t-if="record.job_title.raw_value">
+                                                <span class="mx-1">•</span>
+                                                <field name="job_title"/>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ms-3">
+                                    <field name="state" widget="badge" 
+                                           decoration-info="state == 'draft'" 
+                                           decoration-success="state == 'done'"
+                                           decoration-danger="state == 'cancel'"/>
+                                </div>
+                            </div>
+                            
+                            <!-- Corps: Banque et Montants -->
+                            <div class="border-top pt-2">
+                                <div class="d-flex justify-content-between align-items-center mb-2" t-if="record.banques.raw_value">
+                                    <div class="text-muted small">
+                                        <i class="fa fa-university me-1"/>
+                                        <field name="banques"/>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-end">
+                                    <div>
+                                        <div class="text-muted small">Salaire net</div>
+                                        <div class="fs-4 fw-bold text-primary">
+                                            <field name="salaire" widget="monetary"/>
+                                        </div>
+                                    </div>
+                                    <div class="text-end" t-if="record.salaire_corrige.raw_value">
+                                        <div class="text-muted small">Corrigé</div>
+                                        <div class="fs-5 fw-bold text-warning">
+                                            <field name="salaire_corrige" widget="monetary"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue Pivot -->
+    <record id="view_bank_transfer_pivot" model="ir.ui.view">
+        <field name="name">bank.transfer.pivot</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des virements">
+                <field name="employee_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="salaire" type="measure"/>
+                <field name="salaire_corrige" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vue Graph -->
+    <record id="view_bank_transfer_graph" model="ir.ui.view">
+        <field name="name">bank.transfer.graph</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <graph string="Analyse des virements" type="bar">
+                <field name="employee_id"/>
+                <field name="salaire" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vue Calendar -->
+    <record id="view_bank_transfer_calendar" model="ir.ui.view">
+        <field name="name">bank.transfer.calendar</field>
+        <field name="model">bank.transfer</field>
+        <field name="arch" type="xml">
+            <calendar string="Virements" 
+                      date_start="create_date" 
+                      mode="month"
+                      color="state"
+                      event_open_popup="1">
+                <field name="employee_id" avatar_field="image_128"/>
+                <field name="salaire" widget="monetary"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_bank_transfer" model="ir.actions.act_window">
+        <field name="name">Journal de virement bancaire</field>
+        <field name="res_model">bank.transfer</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar</field>
+        <field name="view_id" ref="view_bank_transfer_tree"/>
+        <field name="search_view_id" ref="view_bank_transfer_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau journal de virement bancaire
+            </p>
+            <p>
+                Cliquez sur "Créer" pour ajouter un nouvel enregistrement au journal de virement bancaire.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_transfer_intern_tranfere">
+        <t t-call="web.basic_layout">
+            <style>
+                * {
+                    color: #000000 !important;
+                }
+                .text-muted, .text-secondary {
+                    color: #000000 !important;
+                }
+                .facture-table th, 
+        .facture-table td {
+            padding: 5px;
+            border: 1px solid #333;
+        }
+        .facture-table th {
+           
+            font-weight: bold;
+        }
+        .facture-table td:first-child, 
+        .facture-table th:first-child {
+            border-left: none; /* Remove the left border of the first cell in each row */
+        }
+        .facture-table td:last-child, 
+        .facture-table th:last-child {
+            border-right: none; /* Remove the right border of the last cell in each row */
+        }
+
+
+                
+              
+            </style>
+            <div class="page" style="font-family: 'Times New Roman', Times, serif;">
+                <div class="header">
+
+                    <!-- Custom Header -->
+                    <div class="row mb-0 text-center" style="align-items: center; justify-content: center;">
+                        <div class="col-2 d-flex justify-content-center">
+                            <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height:150px;width: 150px;" alt="Logo"/>
+                        </div>
+                        <div class="col-10 d-flex flex-column justify-content-center">
+                            <h5 style="margin-bottom: 0;">Organisation pour la Mise en Valeur du fleuve Sénégal - OMVS</h5>
+                            <h5 style="margin-bottom: 0;">Société de Gestion de l'Énergie de Manantali _ SOGEM</h5>
+                            <h5>Direction Financière</h5>
+                        </div>
+                    </div>
+                    <div style="border-bottom: 2px solid black; margin-top: 0; margin-bottom: 20px; width: 100%;"></div>
+                    <div class="row" style="margin-top: 0;">
+                        <div class="col-6">
+                            <span>Visa</span>
+                        </div>
+                        <div class="col-6" style="text-align: right;">
+                            <span>Bamako, le <span t-field="doc.date" t-options='{"format": "EEEE dd MMMM yyyy", "language": "fr_FR"}'/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visa and Date with QR -->
+
+                <div class="row mb-4 align-items-center" style="height:100px;">                    <!-- Adjust height as needed -->
+
+                    <!-- Left spacer -->
+                    <div class="col-4"></div>
+
+                    <!-- Center title -->
+                    <div class="col-4 text-center">
+                        <u>
+                            <strong>
+                Ordre de virement N° <span t-field="doc.name"/>
+                            </strong>
+                        </u>
+                    </div>
+
+                    <!-- QR code on the right -->
+                    <div class="col-4 d-flex justify-content-end align-items-center">
+                        <t t-set="qr_code" t-value="doc.get_qr_code()"/>
+                        <img t-if="qr_code" t-att-src="'data:image/png;base64,%s' % qr_code" style="width:100px; height:100px;"/>
+                    </div>
+
+                </div>
+
+
+
+
+                <!-- Numéro de virement -->
+
+
+                <!-- Destinataire et informations compte -->
+                <div class="mb-4">
+                    <strong>A l'attention : <span t-field="doc.source_account_id.bank_id.name"/>
+                    </strong>
+                    <p class="mt-2">Par le débit de notre compte ouvert dans vos libre sous le numéro:<strong> n°<span t-field="doc.bank_account_id.account_number"/>
+                    </strong>
+                 intitulé <strong>SOGEM</strong>,nous vous demandons de bien vouloir éffectuer un transfert de :<strong>
+                    <t t-esc="doc.amount" />
+ (                    <t t-esc="doc.currency_id.amount_to_text(doc.amount)" />
+
+)</strong>
+            </p>
+        </div>
+        <table class="table table-borderless facture-table">
+            <tr>
+                <th>Bénéficiaire</th>
+                <td>
+                    <t t-esc="doc.beneficiary_id.name"/>
+                </td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>
+                    <t t-esc="doc.beneficiary_address"/>
+                </td>
+            </tr>
+            <tr>
+                <th>Banque du Bénéficiaire</th>
+                <td>
+                    <t t-esc="doc.beneficiary_bank.name"/>
+                </td>
+            </tr>
+          
+                <th>BIC/Adresse Swift</th>
+                <td>
+                    <t t-esc="doc.bic"/>
+                </td>
+            <tr>
+                <th>Montant</th>
+                <td>
+                    <strong>
+                    </strong>
+                    <t t-esc="doc.amount" />
+
+                    <strong>
+                        <t t-esc="doc.currency_id.amount_to_text(doc.amount)" />
+                    </strong>
+                </td>
+            </tr>
+            <tr>
+                <th>Motif</th>
+                <td>
+                    <t t-esc="doc.description"/>
+                </td>
+            </tr>
+        </table>
+        <p class="mt16">Salutations distinguées</p>
+
+        <div class="row mt32 text-center">
+            <div class="col-6 text-left">
+                <strong>
+                    <u>Le Directeur Financier</u>
+                </strong>
+            </div>
+            <div class="col-6 text-right">
+                <strong>
+                    <u>Le Directeur Général</u>
+                </strong>
+            </div>
+        </div>
+    </div>
+</t>
+</template>
+
+
+<record id="action_report_transfer_international" model="ir.actions.report">
+<field name="name">Ordre de Virement</field>
+<field name="model">sogem.transfer</field>
+<field name="report_type">qweb-pdf</field>
+<field name="report_name">odoo_virements.report_transfer_international</field>
+<field name="report_file">odoo_virements.report_transfer_international</field>
+<field name="print_report_name">'Ordre de Virement - %s' % object.name</field>
+<field name="binding_model_id" ref="model_sogem_transfer"/>
+<field name="binding_type">report</field>
+</record>
+
+
+
+
+</odoo>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu principal -->
+    <menuitem id="menu_sogem_root" name="SOGEM Virements" sequence="10"/>
+
+    <!-- Menu Virements -->
+    <menuitem id="menu_sogem_transfer" name="Virements" parent="menu_sogem_root" sequence="10"/>
+
+    <!-- Sous-menus Virements -->
+    <menuitem id="menu_sogem_transfers" name="Virements" parent="menu_sogem_transfer" sequence="10"/>
+    <menuitem id="menu_sogem_transfer_operation" name="Tous les Virements" parent="menu_sogem_transfers" action="action_sogem_all_virements" sequence="10"/>
+
+    <!-- Menu Comptes Bancaires -->
+    <menuitem id="menu_sogem_accounts" name="Comptes Bancaires" parent="menu_sogem_root" sequence="20"/>
+
+    <!-- Action pour les comptes SOGEM -->
+    <record id="action_sogem_company_accounts" model="ir.actions.act_window">
+        <field name="name">Comptes SOGEM</field>
+        <field name="res_model">sogem.bank.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_company_account', '=', True)]</field>
+        <field name="context">{'default_is_company_account': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau compte bancaire SOGEM
+            </p>
+            <p>
+                Créez et gérez les comptes bancaires de la SOGEM.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sous-menus Comptes Bancaires -->
+    <menuitem id="menu_sogem_company_accounts" 
+              name="Comptes SOGEM" 
+              parent="menu_sogem_accounts" 
+              action="action_sogem_company_accounts" 
+              sequence="10"/>
+
+    <menuitem id="menu_sogem_bank_account" 
+              name="Tous les comptes bancaires" 
+              parent="menu_sogem_accounts" 
+              action="action_sogem_bank_account" 
+              sequence="20"/>
+
+    <menuitem id="menu_sogem_beneficiary" 
+              name="Bénéficiaires" 
+              parent="menu_sogem_accounts" 
+              action="action_sogem_beneficiary" 
+              sequence="30"/>
+
+    <menuitem id="menu_sogem_bank" 
+              name="Banques" 
+              parent="menu_sogem_accounts" 
+              action="action_sogem_bank" 
+              sequence="40"/>
+
+    <!-- Menu Configuration -->
+    <menuitem id="menu_sogem_transfer_config" 
+              name="Configuration" 
+              parent="menu_sogem_root" 
+              sequence="100"/>
+
+    <menuitem id="menu_beneficiary_transfer_history"
+              name="Analyse des virements par bénéficiaire"
+              parent="odoo_virements.menu_sogem_root"
+              action="action_beneficiary_transfer_history"
+              sequence="200"/>
+
+
+    <menuitem id="menu_transfer_category"
+                  name="Categories"
+                  parent="menu_sogem_accounts"
+                  action="action_beneficiary_category"
+                  sequence="30"/>
+
+</odoo> 

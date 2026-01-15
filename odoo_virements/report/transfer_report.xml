@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template for each bank's detail page -->
+    <template id="report_transfer_bank_detail">
+        <t t-call="web.basic_layout">
+            <style>
+                * {
+                    color: #000000 !important;
+                }
+                .text-muted, .text-secondary {
+                    color: #000000 !important;
+                }
+                .facture-table th, 
+        .facture-table td {
+            padding: 5px;
+            border: 1px solid #333;
+        }
+        .facture-table th {
+           
+            font-weight: bold;
+        }
+        .facture-table td:first-child, 
+        .facture-table th:first-child {
+            border-left: none; /* Remove the left border of the first cell in each row */
+        }
+        .facture-table td:last-child, 
+        .facture-table th:last-child {
+            border-right: none; /* Remove the right border of the last cell in each row */
+        }
+
+
+                
+              
+            </style>
+            <main>
+                <div class="page" style="margin-top: 0; padding-top: 0;">
+                    <!-- Custom Header -->
+                    <div class="header">
+                        <div class="row mb-0 text-center" style="align-items: center; justify-content: center;">
+                            <div class="col-2 d-flex justify-content-center">
+                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height:150px;width: 150px;" alt="Logo"/>
+                            </div>
+                            <div class="col-10 d-flex flex-column justify-content-center">
+                                <h5 style="margin-bottom: 0;">Organisation pour la Mise en Valeur du fleuve Sénégal - OMVS</h5>
+                                <h5 style="margin-bottom: 0;">Société de Gestion de l'Énergie de Manantali _ SOGEM</h5>
+                                <h5>Direction Financière</h5>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 2px solid black; margin-top: 0; margin-bottom: 20px; width: 100%;"></div>
+                        <div class="row" style="margin-top: 0;">
+                            <div class="col-6">
+                                <span>Visa</span>
+                            </div>
+                            <div class="col-6" style="text-align: right;">
+                                <span>Bamako, le <span t-field="doc.date" t-options='{"format": "EEEE dd MMMM yyyy", "language": "fr_FR"}'/>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row  align-items-center">                        <!-- Adjust height as needed -->
+
+                        <!-- Left spacer -->
+
+                        <!-- Center title -->
+                        <div class="col-8" style="text-align: right;">
+                             <h4>
+                           Bordereau -  <t t-esc="bank.name"/>
+                        </h4>
+                        </div>
+
+                        <!-- QR code on the right -->
+                        <div class="col-4 d-flex justify-content-end align-items-center">
+                            <t t-set="qr_code" t-value="doc.get_qr_code()"/>
+                            <img t-if="qr_code" t-att-src="'data:image/png;base64,%s' % qr_code" style="width:100px; height:100px;"/>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Bank Name -->
+                    <div class="text-center mb-4" style="margin-top: 10px;">
+                        
+                    </div>
+                    <br></br>
+
+
+                    <!-- Beneficiaries Table -->
+                    <table class="table table-borderless facture-table">
+                        <thead>
+                            <tr >
+                                <th class="text-center"><strong>Bénéficiaire</strong></th>
+                                <th class="text-center"><strong>N° compte</strong></th>
+                                <th class="text-center"><strong>Montant  (<t t-esc="doc.currency_id.full_name"/>)</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="lines" t-as="line">
+                                <tr >
+                                    <td>
+                                        <span t-field="line.beneficiary_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.account_id.account_number"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="line.amount_text"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr >
+                                <td colspan="2" class="text-center">
+                                    <strong>TOTAL</strong>
+                                </td>
+                                <td class="text-center">
+                                    <strong>
+                                        <t t-esc="'{:,.0f}'.format(sum(line.amount for line in lines)).replace(',', ' ')" />
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Montant en lettres -->
+                    <div class="mb-4" style="border-top: 1px solid black;border-bottom: 1px solid black; padding: 10px;">
+                        <p>Arrêté le présent bordereau à la somme de: 
+                            <strong>
+                                <t t-esc="doc.currency_id.amount_to_text(sum(line.amount for line in lines)).upper()" style="text-transform: uppercase;"/>
+                            </strong>
+                        </p>
+                    </div>
+
+                    <!-- Motif -->
+            <div class="mb-4 d-flex align-items-top">
+                <strong>Motif:</strong>
+                <div style="margin-left: 40px; flex: 1; text-align: left;">
+                    <span t-field="doc.description" class="font-italic"/>
+                </div>
+            </div>
+
+
+                    <!-- International Transfer Table (Conditional) -->
+                    <t t-if="doc.transfer_type == 'transfer'">
+                        <table class="table table-borderless facture-table">
+                            <thead>
+                                <tr >
+                                    <th>Bénéficiaire</th>
+                                    <th>Adresse</th>
+                                    <th>Banque</th>
+                                    <th>IBAN</th>
+                                    <th>BIC/Swift</th>
+                                    <th>Montant</th>
+                                    <th>Montant (Lettre)</th>
+                                    <th>Motif</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="lines" t-as="line">
+                                    <tr >
+                                        <td>
+                                            <t t-esc="line.beneficiary_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.beneficiary_id.address"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.account_id.bank_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.account_id.iban"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.account_id.bic"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.amount_text"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.currency_id.amount_to_text(line.amount)"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.description"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <!-- Signatures -->
+                    <div class="row mt-5">
+                        <div class="col-6 text-center">
+                            <p>
+                                <strong>
+                                    <u>Le Directeur Financier</u>
+                                </strong>
+                            </p>
+                        </div>
+                        <div class="col-6 text-center">
+                            <p>
+                                <strong>
+                                    <u>Le Directeur Général</u>
+                                </strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <!-- Footer -->
+            <div class="footer o_footer_content border-top pt-2 text-center" id="footer">
+                <div class="text-center">
+                    <strong>
+                        <p>ACI 2000 Parcelle N° 2501- BP E- 4015 - BAMAKO - République du Mali
+Tél. 00 223 20 23 32 86 / 00 223 20 23 26 57 - Fax: 00 223 20 23 83 50; Email: spdg@sogem-omvs.org</p>
+                    </strong>
+                    <p>Page <span class="page"/>
+ /                    <span class="topage"/>
+                </p>
+            </div></div>
+        </t>
+    </template>
+
+    <!-- Main template -->
+    <!-- Main template -->
+    <template id="report_transfer">
+        <t t-call="web.html_container">
+            <style>
+                * {
+                    color: #000000 !important;
+                }
+                .text-muted, .text-secondary {
+                    color: #000000 !important;
+                }
+                .facture-table th, 
+        .facture-table td {
+            padding: 5px;
+            border: 1px solid #333;
+        }
+        .facture-table th {
+           
+            font-weight: bold;
+        }
+        .facture-table td:first-child, 
+        .facture-table th:first-child {
+            border-left: none; /* Remove the left border of the first cell in each row */
+        }
+        .facture-table td:last-child, 
+        .facture-table th:last-child {
+            border-right: none; /* Remove the right border of the last cell in each row */
+        }
+
+
+                
+              
+            </style>
+            <t t-foreach="docs" t-as="doc">
+                <t t-if="doc.transfer_type == 'multiple'">
+                    <!-- Group lines by bank -->
+                    <t t-set="bank_lines" t-value="doc.get_lines_by_bank()"/>
+
+                    <!-- Render main document -->
+                    <t t-call="odoo_virements.report_transfer_multiple_document"/>
+
+                    <!-- Iterate over banks -->
+                    <t t-foreach="bank_lines.items()" t-as="bank_data">
+                        <!-- Page break (skip for the first bank) -->
+                        <t t-if="bank_data_index > 0">
+                            <div style="page-break-before: always;"/>
+                        </t>
+                        <!-- Pass ALL lines for the current bank to the sub-template -->
+                        <t t-call="odoo_virements.report_transfer_bank_detail">
+                            <t t-set="bank" t-value="bank_data[0]"/>
+                            <!-- Bank object -->
+                            <t t-set="lines" t-value="bank_data[1]"/>
+                            <!-- List of lines -->
+                            <t t-set="doc" t-value="doc"/>
+                        </t>
+                    </t>
+                </t>
+                <t t-elif="doc.transfer_type =='simple'">
+                    <t t-call="odoo_virements.report_transfer_document"/>
+                </t>
+                <t t-elif="doc.transfer_type =='transfer'">
+                    <t t-call="odoo_virements.report_transfer_international"/>
+                </t>
+                <t t-else="">
+                    <t t-call="odoo_virements.report_transfer_document"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_transfer_document">
+        <t t-call="web.basic_layout">
+            <style>
+                * {
+                    color: #000000 !important;
+                }
+                .text-muted, .text-secondary {
+                    color: #000000 !important;
+                }
+                .facture-table th, 
+        .facture-table td {
+            padding: 5px;
+            border: 1px solid #333;
+        }
+        .facture-table th {
+           
+            font-weight: bold;
+        }
+        .facture-table td:first-child, 
+        .facture-table th:first-child {
+            border-left: none; /* Remove the left border of the first cell in each row */
+        }
+        .facture-table td:last-child, 
+        .facture-table th:last-child {
+            border-right: none; /* Remove the right border of the last cell in each row */
+        }
+
+
+                
+              
+            </style>
+            <div class="page" style="font-family: 'Times New Roman', Times, serif;">
+                <div class="header">
+
+                    <!-- Custom Header -->
+                    <div class="row mb-0 text-center" style="align-items: center; justify-content: center;">
+                        <div class="col-2 d-flex justify-content-center">
+                            <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height:150px;width: 150px;" alt="Logo"/>
+                        </div>
+                        <div class="col-10 d-flex flex-column justify-content-center">
+                            <h5 style="margin-bottom: 0;">Organisation pour la Mise en Valeur du fleuve Sénégal - OMVS</h5>
+                            <h5 style="margin-bottom: 0;">Société de Gestion de l'Énergie de Manantali _ SOGEM</h5>
+                            <h5>Direction Financière</h5>
+                        </div>
+                    </div>
+                    <div style="border-bottom: 2px solid black; margin-top: 0; margin-bottom: 20px; width: 100%;"></div>
+                    <div class="row" style="margin-top: 0;">
+                        <div class="col-6">
+                            <span>Visa</span>
+                        </div>
+                        <div class="col-6" style="text-align: right;">
+                            <span>Bamako, le <span t-field="doc.date" t-options='{"format": "EEEE dd MMMM yyyy", "language": "fr_FR"}'/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4 align-items-center" style="height:100px;">                    <!-- Adjust height as needed -->
+
+                    <!-- Left spacer -->
+                    <div class="col-4"></div>
+
+                    <!-- Center title -->
+                    <div class="col-4 text-center">
+                        <u>
+                            <strong>
+                Ordre de virement N° <span t-field="doc.name"/>
+                            </strong>
+                        </u>
+                    </div>
+
+                    <!-- QR code on the right -->
+                    <div class="col-4 d-flex justify-content-end align-items-center">
+                        <t t-set="qr_code" t-value="doc.get_qr_code()"/>
+                        <img t-if="qr_code" t-att-src="'data:image/png;base64,%s' % qr_code" style="width:100px; height:100px;"/>
+                    </div>
+
+                </div>
+
+                <!-- Numéro de virement -->
+
+
+                <!-- Destinataire et informations compte -->
+                <div class="mb-4">
+                    <strong>A l'attention : <span t-field="doc.source_account_id.bank_id.name"/>
+                    </strong>
+                    <p class="mt-2 text-justify">Par le débit de notre compte ouvert dans vos livres sous le<strong> n°<span t-field="doc.source_account_id.account_number"/>
+                    </strong>
+                 intitulé <strong>SOGEM</strong>, veuillez effectuer le(s) virement(s) ci-dessous :</p>
+            </div>
+
+            <!-- Tableau des virements -->
+            <table class="table table-borderless facture-table">
+                <thead>
+                     <tr >
+                         <th class="text-center"><strong>Bénéficiaire</strong></th>
+                        <th class="text-center"><strong> Banque </strong></th>
+                        <th class="text-center"><strong>N° compte </strong></th>
+                        <th class="text-center"><strong>Montant  (<t t-esc="doc.currency_id.full_name"/>)</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="doc.transfer_line_ids" t-as="line">
+                        <tr >
+                            <td>
+                                <span t-field="line.beneficiary_id.name" class="text-center"/>
+                            </td>
+                            <td>
+                                <span t-field="line.account_id.bank_id.name" class="text-center"/>
+                            </td>
+                            <td>
+                                <span t-field="line.account_id.account_number" class="text-center"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="line.amount_text"/>
+                            </td>
+                        </tr>
+                        </t>
+                        <tr >
+                            <td colspan="3" class="text-center">
+                                <strong>TOTAL</strong>
+                            </td>
+                            <td class="text-center">
+                                <strong>
+                                    <t t-esc="'{:,.0f}'.format(sum(line.amount for line in doc.transfer_line_ids)).replace(',', ' ')" />
+                                </strong>
+                            </td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+
+            <!-- Montant en lettres -->
+            <div class="mb-4" style="border-top: 1px solid black;border-bottom: 1px solid black; padding: 10px;">
+                <p>Arrêté le présent ordre de virement à la somme de: <strong>
+                    <span t-esc="doc.amount_text.upper()"/>
+                </strong>
+            </p>
+        </div>
+
+        <!-- Motif -->
+        <div class="mb-4 d-flex align-items-top">
+                <strong>Motif:</strong>
+                <div style="margin-left: 40px; flex: 1; text-align: left;">
+                    <span t-field="doc.description" class="font-italic"/>
+                </div>
+            </div>
+
+        <!-- Signatures -->
+        <div class="row mt-5">
+            <div class="col-6 text-center">
+                <p>
+                    <strong>
+                        <u>Le Directeur Financier</u>
+                    </strong>
+                </p>
+            </div>
+            <div class="col-6 text-center">
+                <p>
+                    <strong>
+                        <u>Le Directeur Général</u>
+                    </strong>
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="footer o_footer_content border-top pt-2 text-center" id="footer">
+        <div class="text-center">
+            <strong>
+                <p>ACI 2000 Parcelle N° 2501- BP E- 4015 - BAMAKO - République du Mali
+Tél. 00 223 20 23 32 86 / 00 223 20 23 26 57 - Fax: 00 223 20 23 83 50; Email: spdg@sogem-omvs.org</p>
+            </strong>
+            <p>Page <span class="page"/>
+ /            <span class="topage"/>
+        </p>
+    </div>
+</div>
+</t>
+</template>
+
+<template id="report_transfer_multiple_document">
+<t t-call="web.html_container">
+    <t t-foreach="docs" t-as="o">
+        <t t-call="web.basic_layout">
+            <style>
+                * {
+                    color: #000000 !important;
+                }
+                .text-muted, .text-secondary {
+                    color: #000000 !important;
+                }
+                .facture-table th, 
+        .facture-table td {
+            padding: 5px;
+            border: 1px solid #333;
+        }
+        .facture-table th {
+           
+            font-weight: bold;
+        }
+        .facture-table td:first-child, 
+        .facture-table th:first-child {
+            border-left: none; /* Remove the left border of the first cell in each row */
+        }
+        .facture-table td:last-child, 
+        .facture-table th:last-child {
+            border-right: none; /* Remove the right border of the last cell in each row */
+        }
+
+
+                
+              
+            </style>
+            <main>
+                <div class="page" style="font-family: 'Times New Roman', Times, serif;">
+                    <div class="header">
+
+                        <!-- Custom Header -->
+                        <div class="row mb-0 text-center" style="align-items: center; justify-content: center;">
+                            <div class="col-2 d-flex justify-content-center">
+                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-height:150px;width: 150px;" alt="Logo"/>
+                            </div>
+                            <div class="col-10 d-flex flex-column justify-content-center">
+                                <h5 style="margin-bottom: 0;">Organisation pour la Mise en Valeur du fleuve Sénégal - OMVS</h5>
+                                <h5 style="margin-bottom: 0;">Société de Gestion de l'Énergie de Manantali _ SOGEM</h5>
+                                <h5>Direction Financière</h5>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 2px solid black; margin-top: 0; margin-bottom: 20px; width: 100%;"></div>
+                        <div class="row" style="margin-top: 0;">
+                            <div class="col-6">
+                                <span>Visa</span>
+                            </div>
+                            <div class="col-6" style="text-align: right;">
+                                <span>Bamako, le <span t-field="o.date" t-options='{"format": "EEEE dd MMMM yyyy", "language": "fr_FR"}'/>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Visa and Date with QR -->
+
+
+                    <div class="row mb-4 align-items-center" style="height:100px;">                        <!-- Adjust height as needed -->
+
+                        <!-- Left spacer -->
+                        <div class="col-4"></div>
+
+                        <!-- Center title -->
+                        <div class="col-4 text-center">
+                            <u>
+                                <strong>
+                Ordre de virement N° <span t-field="o.name"/>
+                                </strong>
+                            </u>
+                        </div>
+
+                        <!-- QR code on the right -->
+                        <div class="col-4 d-flex justify-content-end align-items-center">
+                            <t t-set="qr_code" t-value="o.get_qr_code()"/>
+                            <img t-if="qr_code" t-att-src="'data:image/png;base64,%s' % qr_code" style="width:100px; height:100px;"/>
+                        </div>
+
+                    </div>
+
+                    <!-- Destinataire -->
+                    <div class="mb-4">
+                        <strong>A l'attention de : <span t-field="o.source_account_id.bank_id.name"/>
+</strong>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="mb-4">
+                        <p class="text-justify">Par le débit de notre compte ouvert dans vos livres sous le n°<strong>
+                            <span t-field="o.source_account_id.account_number"/>
+                        </strong> intitulé <strong>SOGEM</strong>,
+                                    veuillez effectuer les virements ci-dessous conformément aux bordereaux joints :</p>
+                </div>
+
+                <!-- Updated table in report_transfer_multiple_document -->
+                <table class="table table-borderless facture-table">
+                    <thead>
+                        <tr >
+                            <th class="text-center"><strong>BANQUE</strong></th>
+                            <th class="text-center"><strong>Montant  (<t t-esc="o.currency_id.full_name"/>)</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="o.get_lines_by_bank().items()" t-as="bank_group">
+                            <t t-set="bank" t-value="bank_group[0]"/>
+                            <t t-set="lines" t-value="bank_group[1]"/>
+                            <tr >
+                                <td>
+                                    <t t-esc="bank.name"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="'{:,.0f}'.format(sum([line.amount for line in lines])).replace(',', ' ')" />
+                                </td>
+                            </tr>
+                        </t>
+                        <tr >
+                            <td class="text-center">
+                                <strong>TOTAL</strong>
+                            </td>
+                            <td class="text-center">
+                                <strong>
+                                    <t t-esc="'{:,.0f}'.format(sum([sum([line.amount for line in lines]) for bank, lines in o.get_lines_by_bank().items()])).replace(',', ' ')"  style="text-transform: uppercase;"/>
+                                </strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Montant en lettres -->
+                <div class="mb-4" style="border-top: 1px solid black;border-bottom: 1px solid black; padding: 10px;">
+
+                    <p>Arrêté le présent bordereau à la somme de: <strong>
+                        <t t-esc="(o.currency_id.amount_to_text(sum([sum([line.amount for line in lines]) for bank, lines in o.get_lines_by_bank().items()]))).upper()" style="text-transform: uppercase;"/>
+                    </strong>
+                </p>
+            </div>
+
+            <!-- Motif -->
+            <div class="mb-4 d-flex align-items-top">
+                <strong>Motif:</strong>
+                <div style="margin-left: 40px; flex: 1; text-align: left;">
+                    <span t-field="o.description" class="font-italic"/>
+                </div>
+            </div>
+
+            <!-- Signatures -->
+            <div class="row mt-5">
+                <div class="col-6 text-center">
+                    <p>
+                        <strong>
+                            <u>Le Directeur Financier</u>
+                        </strong>
+                    </p>
+                </div>
+                <div class="col-6 text-center">
+                    <p>
+                        <strong>
+                            <u>Le Directeur Général</u>
+                        </strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <div class="footer o_footer_content border-top pt-2 text-center" id="footer">
+        <div class="text-center">
+            <strong>
+                <p>ACI 2000 Parcelle N° 2501- BP E- 4015 - BAMAKO - République du Mali
+Tél. 00 223 20 23 32 86 / 00 223 20 23 26 57 - Fax: 00 223 20 23 83 50; Email: spdg@sogem-omvs.org</p>
+            </strong>
+            <p>Page <span class="page"/>
+ /            <span class="topage"/>
+        </p>
+    </div></div>
+</t>
+</t>
+</t>
+</template>
+
+<record id="action_report_transfer" model="ir.actions.report">
+<field name="name">Ordre de Virement</field>
+<field name="model">sogem.transfer</field>
+<field name="report_type">qweb-pdf</field>
+<field name="report_name">odoo_virements.report_transfer</field>
+<field name="report_file">odoo_virements.report_transfer</field>
+<field name="print_report_name">'Ordre de Virement - %s' % object.name</field>
+<field name="binding_model_id" ref="model_sogem_transfer"/>
+<field name="binding_type">report</field>
+</record>
+
+<!-- Report action for summary -->
+<record id="action_report_transfer_summary" model="ir.actions.report">
+<field name="name">Récapitulatif de Virement</field>
+<field name="model">sogem.transfer</field>
+<field name="report_type">qweb-pdf</field>
+<field name="report_name">odoo_virements.report_transfer_multiple_document</field>
+<field name="report_file">odoo_virements.report_transfer_multiple_document</field>
+<field name="binding_model_id" ref="model_sogem_transfer"/>
+<field name="binding_type">report</field>
+</record>
+
+<!-- Report action for bank details -->
+<!-- <record id="action_report_transfer_bank_details" model="ir.actions.report">
+<field name="name">Détails par Banque</field>
+<field name="model">sogem.transfer</field>
+<field name="report_type">qweb-pdf</field>
+<field name="report_name">odoo_virements.report_transfer_bank_detail</field>
+<field name="report_file">odoo_virements.report_transfer_bank_detail</field>
+<field name="binding_model_id" ref="model_sogem_transfer"/>
+<field name="binding_type">report</field>
+</record> -->
+
+</odoo>

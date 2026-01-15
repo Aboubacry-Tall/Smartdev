@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-l10n_mr_hr_payroll.access_hr_category,access_hr_category,l10n_mr_hr_payroll.model_hr_category,base.group_user,1,1,1,1
-l10n_mr_hr_payroll.access_hr_echallon,access_hr_echallon,l10n_mr_hr_payroll.model_hr_echallon,base.group_user,1,1,1,1
-l10n_mr_hr_payroll.access_hr_virement,access_hr_virement,l10n_mr_hr_payroll.model_hr_virement,base.group_user,1,1,1,1
-l10n_mr_hr_payroll.access_hr_bank,access_hr_bank,l10n_mr_hr_payroll.model_hr_bank,base.group_user,1,1,1,1
-l10n_mr_hr_payroll.access_hr_category_manager,access_hr_category_manager,l10n_mr_hr_payroll.model_hr_category,hr_payroll.group_hr_payroll_manager,1,1,1,1
-l10n_mr_hr_payroll.access_hr_echallon_manager,access_hr_echallon_manager,l10n_mr_hr_payroll.model_hr_echallon,hr_payroll.group_hr_payroll_manager,1,1,1,1

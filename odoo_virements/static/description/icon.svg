@@ -1,0 +1,31 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A09D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#008B8B;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="url(#bgGradient)"/>
+  
+  <!-- Bank building/account -->
+  <rect x="25" y="35" width="30" height="50" rx="2" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5"/>
+  <rect x="28" y="38" width="24" height="8" rx="1" fill="#00A09D" opacity="0.3"/>
+  <rect x="28" y="50" width="24" height="4" rx="1" fill="#00A09D" opacity="0.2"/>
+  <rect x="28" y="58" width="24" height="4" rx="1" fill="#00A09D" opacity="0.2"/>
+  
+  <!-- Arrow representing transfer -->
+  <path d="M 55 60 L 73 60 L 70 55 L 73 60 L 70 65" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 60 60 L 68 60" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Destination account -->
+  <rect x="73" y="35" width="30" height="50" rx="2" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5"/>
+  <rect x="76" y="38" width="24" height="8" rx="1" fill="#00A09D" opacity="0.3"/>
+  <rect x="76" y="50" width="24" height="4" rx="1" fill="#00A09D" opacity="0.2"/>
+  <rect x="76" y="58" width="24" height="4" rx="1" fill="#00A09D" opacity="0.2"/>
+  
+  <!-- Money symbol in center -->
+  <circle cx="64" cy="95" r="12" fill="#FFFFFF" opacity="0.9"/>
+  <text x="64" y="101" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#00A09D" text-anchor="middle">€</text>
+</svg>
+

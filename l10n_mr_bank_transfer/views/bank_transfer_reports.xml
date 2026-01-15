@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action de rapport PDF groupé par banque (utilisé par le bouton Rapport) -->
+    <record id="action_report_bank_transfer_grouped" model="ir.actions.report">
+        <field name="name">Rapport des virements bancaires</field>
+        <field name="model">bank.transfer</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_mr_bank_transfer.report_bank_transfer_grouped_by_bank</field>
+        <field name="report_file">l10n_mr_bank_transfer.report_bank_transfer_grouped_by_bank</field>
+        <field name="print_report_name">'Rapport_virements_%s' % (object.batch_id.name if object.batch_id else 'banques')</field>
+    </record>
+
+    <!-- Template principal du rapport -->
+    <template id="report_bank_transfer_distribution_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- En-tête du rapport -->
+                        <div class="text-center mb-4">
+                            <t t-set="bank_filter" t-value="context.get('bank_filter')"/>
+                            <h2 t-if="bank_filter">JOURNAL DE BANQUE - <span t-esc="bank_filter"/></h2>
+                            <h2 t-else="">Répartition des virements bancaires</h2>
+                            <p t-if="o.batch_id">
+                                <strong>Lot:</strong> <span t-field="o.batch_id.name"/><br/>
+                                <strong>Date:</strong> <span t-field="o.batch_id.date"/>
+                            </p>
+                        </div>
+
+                        <!-- Tableau de répartition -->
+                        <table class="table table-sm table-bordered" style="border-color: #CED4DA;">
+                            <thead style="background-color: #D6EAF8; color: #212529;">
+                                <tr>
+                                    <th class="text-center" style="border-color: #CED4DA;">Matricule</th>
+                                    <th class="text-center" style="border-color: #CED4DA;">Nom et Prénom</th>
+                                    <th class="text-center" style="border-color: #CED4DA;">Banque</th>
+                                    <th class="text-center" style="border-color: #CED4DA;">Code BIC</th>
+                                    <th class="text-center" style="border-color: #CED4DA;">N° Compte</th>
+                                    <th class="text-center" style="border-color: #CED4DA;">Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="bank_filter" t-value="context.get('bank_filter')"/>
+                                
+                                <!-- Filtrer les lignes selon la banque -->
+                                <t t-set="filtered_lines" t-value="o.transfer_line_ids.filtered(lambda l: not bank_filter or l.bank_id.name == bank_filter) if o.transfer_line_ids else []"/>
+                                
+                                <t t-if="o.transfer_line_ids and filtered_lines">
+                                    <!-- Afficher les lignes filtrées -->
+                                    <t t-foreach="filtered_lines" t-as="line">
+                                        <tr>
+                                            <td><span t-field="o.matricule"/></td>
+                                            <td><span t-field="o.name"/></td>
+                                            <td><span t-field="line.bank_id"/></td>
+                                            <td><span t-field="line.bank_bic"/></td>
+                                            <td><span t-field="line.acc_number"/></td>
+                                            <td class="text-end">
+                                                <span t-field="line.amount" 
+                                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!-- Total calculé -->
+                                    <tr style="background-color: #E9ECEF; font-weight: bold; color: #212529;">
+                                        <td colspan="5" class="text-end" style="border-color: #CED4DA;">TOTAL:</td>
+                                        <td class="text-end" style="border-color: #CED4DA;">
+                                            <t t-set="total" t-value="sum(filtered_lines.mapped('amount'))"/>
+                                            <span t-esc="'%.2f' % total"/>
+                                            <span t-field="o.currency_id.symbol"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-elif="not bank_filter or o.banques == bank_filter">
+                                    <!-- Si pas de répartition et correspond au filtre -->
+                                    <tr>
+                                        <td><span t-field="o.matricule"/></td>
+                                        <td><span t-field="o.name"/></td>
+                                        <td><span t-field="o.banques"/></td>
+                                        <td><span t-field="o.code_banque"/></td>
+                                        <td><span t-field="o.bank_account_id.acc_number"/></td>
+                                        <td class="text-end">
+                                            <span t-field="o.salaire" 
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <!-- Total -->
+                                    <tr style="background-color: #E9ECEF; font-weight: bold; color: #212529;">
+                                        <td colspan="5" class="text-end" style="border-color: #CED4DA;">TOTAL:</td>
+                                        <td class="text-end" style="border-color: #CED4DA;">
+                                            <span t-field="o.salaire" 
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Note si salaire corrigé -->
+                        <t t-if="o.salaire_corrige">
+                            <div class="alert alert-warning mt-3">
+                                <strong>Note:</strong> Salaire corrigé: 
+                                <span t-field="o.salaire_corrige" 
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Template pour rapport groupé (plusieurs virements) -->
+    <template id="report_bank_transfer_distribution_grouped">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <!-- En-tête du rapport -->
+                    <div class="text-center mb-4">
+                        <t t-set="bank_filter" t-value="context.get('bank_filter')"/>
+                        <h2 t-if="bank_filter">JOURNAL DE BANQUE - <span t-esc="bank_filter"/></h2>
+                        <h2 t-else="">Répartition des virements bancaires</h2>
+                        <t t-if="docs and docs[0].batch_id">
+                            <p>
+                                <strong>Lot:</strong> <span t-field="docs[0].batch_id.name"/><br/>
+                                <strong>Date:</strong> <span t-field="docs[0].batch_id.date"/>
+                            </p>
+                        </t>
+                    </div>
+
+                    <!-- Tableau de répartition pour tous les virements -->
+                    <table class="table table-sm table-bordered" style="border-color: #CED4DA;">
+                        <thead style="background-color: #D6EAF8; color: #212529;">
+                            <tr>
+                                <th class="text-center" style="border-color: #CED4DA;">Matricule</th>
+                                <th class="text-center" style="border-color: #CED4DA;">Nom et Prénom</th>
+                                <th class="text-center" style="border-color: #CED4DA;">Banque</th>
+                                <th class="text-center" style="border-color: #CED4DA;">Code BIC</th>
+                                <th class="text-center" style="border-color: #CED4DA;">N° Compte</th>
+                                <th class="text-center" style="border-color: #CED4DA;">Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="bank_filter" t-value="context.get('bank_filter')"/>
+                            <t t-set="all_lines" t-value="[]"/>
+                            
+                            <t t-foreach="docs" t-as="transfer">
+                                <t t-set="filtered_lines" t-value="transfer.transfer_line_ids.filtered(lambda l: not bank_filter or l.bank_id.name == bank_filter) if transfer.transfer_line_ids else []"/>
+                                
+                                <t t-if="transfer.transfer_line_ids and filtered_lines">
+                                    <!-- Afficher les lignes filtrées -->
+                                    <t t-foreach="filtered_lines" t-as="line">
+                                        <tr>
+                                            <td><span t-field="transfer.matricule"/></td>
+                                            <td><span t-field="transfer.name"/></td>
+                                            <td><span t-field="line.bank_id"/></td>
+                                            <td><span t-field="line.bank_bic"/></td>
+                                            <td><span t-field="line.acc_number"/></td>
+                                            <td class="text-end">
+                                                <span t-field="line.amount" 
+                                                      t-options='{"widget": "monetary", "display_currency": transfer.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-set="all_lines" t-value="all_lines + list(filtered_lines)"/>
+                                </t>
+                                <t t-elif="not bank_filter or transfer.banques == bank_filter">
+                                    <!-- Si pas de répartition et correspond au filtre -->
+                                    <tr>
+                                        <td><span t-field="transfer.matricule"/></td>
+                                        <td><span t-field="transfer.name"/></td>
+                                        <td><span t-field="transfer.banques"/></td>
+                                        <td><span t-field="transfer.code_banque"/></td>
+                                        <td><span t-field="transfer.bank_account_id.acc_number"/></td>
+                                        <td class="text-end">
+                                            <span t-field="transfer.salaire" 
+                                                  t-options='{"widget": "monetary", "display_currency": transfer.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <!-- Total général -->
+                            <tr style="background-color: #D6EAF8; color: #212529; font-weight: bold;">
+                                <td colspan="5" class="text-end" style="border-color: #CED4DA;">TOTAL GÉNÉRAL:</td>
+                                <td class="text-end" style="border-color: #CED4DA;">
+                                    <t t-set="total" t-value="sum(line.amount for line in all_lines) if all_lines else sum(docs.filtered(lambda t: not bank_filter or t.banques == bank_filter).mapped('salaire'))"/>
+                                    <span t-esc="'%.2f' % total"/>
+                                    <t t-if="docs"> <span t-field="docs[0].currency_id.symbol"/></t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Template pour rapport groupé par banque avec sous-totaux -->
+    <template id="report_bank_transfer_grouped_by_bank">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <!-- Récupérer le filtre de banque -->
+                    <t t-set="bank_filter" t-value="context.get('bank_filter')"/>
+                    <t t-set="all_subtotals" t-value="[]"/>
+                    
+                    <!-- En-tête du rapport -->
+                    <div class="text-center mb-4">
+                        <t t-if="bank_filter">
+                            <h2>JOURNAL DE BANQUE - <span t-esc="bank_filter"/></h2>
+                        </t>
+                        <t t-else="">
+                            <h2>RAPPORT DES VIREMENTS BANCAIRES</h2>
+                            <h4>Groupé par banque</h4>
+                        </t>
+                        <t t-if="docs and docs[0].batch_id">
+                            <p>
+                                <strong>Lot:</strong> <span t-field="docs[0].batch_id.name"/><br/>
+                                <strong>Date:</strong> <span t-field="docs[0].batch_id.date"/>
+                            </p>
+                        </t>
+                    </div>
+
+                    <!-- Collecter les banques (filtrées si nécessaire) -->
+                    <t t-set="all_banks" t-value="set()"/>
+                    <t t-foreach="docs" t-as="transfer">
+                        <t t-if="transfer.transfer_line_ids">
+                            <t t-foreach="transfer.transfer_line_ids" t-as="line">
+                                <t t-if="line.bank_id and (not bank_filter or line.bank_id.name == bank_filter)">
+                                    <t t-set="dummy" t-value="all_banks.add(line.bank_id.name)"/>
+                                </t>
+                            </t>
+                        </t>
+                        <t t-elif="not bank_filter or transfer.banques == bank_filter">
+                            <t t-set="dummy" t-value="all_banks.add(transfer.banques) if transfer.banques else None"/>
+                        </t>
+                    </t>
+
+                    <!-- Parcourir chaque banque -->
+                    <t t-foreach="sorted(all_banks)" t-as="bank_name">
+                        <div class="mb-4" style="page-break-inside: avoid;">
+                            <!-- En-tête de la banque -->
+                            <h4 style="background-color: #4A90E2; color: white; padding: 12px; margin-top: 20px; border-radius: 4px;">
+                                <i class="fa fa-university"/> <span t-esc="bank_name"/>
+                            </h4>
+
+                            <!-- Tableau pour cette banque -->
+                            <table class="table table-sm table-bordered" style="border-color: #CED4DA;">
+                                <thead style="background-color: #D6EAF8; color: #212529;">
+                                    <tr>
+                                        <th class="text-center" style="border-color: #CED4DA;">Matricule</th>
+                                        <th class="text-center" style="border-color: #CED4DA;">Nom et Prénom</th>
+                                        <th class="text-center" style="border-color: #CED4DA;">Code BIC</th>
+                                        <th class="text-center" style="border-color: #CED4DA;">N° Compte</th>
+                                        <th class="text-center" style="border-color: #CED4DA;">Montant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="bank_total" t-value="0.0"/>
+                                    <t t-set="bank_lines" t-value="[]"/>
+                                    
+                                    <t t-foreach="docs" t-as="transfer">
+                                        <t t-set="filtered_lines" t-value="transfer.transfer_line_ids.filtered(lambda l: l.bank_id.name == bank_name) if transfer.transfer_line_ids else []"/>
+                                        
+                                        <t t-if="filtered_lines">
+                                            <!-- Afficher les lignes de cette banque -->
+                                            <t t-foreach="filtered_lines" t-as="line">
+                                                <tr>
+                                                    <td><span t-field="transfer.matricule"/></td>
+                                                    <td><span t-field="transfer.name"/></td>
+                                                    <td><span t-field="line.bank_bic"/></td>
+                                                    <td><span t-field="line.acc_number"/></td>
+                                                    <td class="text-end">
+                                                        <span t-field="line.amount" 
+                                                              t-options='{"widget": "monetary", "display_currency": transfer.currency_id}'/>
+                                                    </td>
+                                                </tr>
+                                                <t t-set="bank_lines" t-value="bank_lines + [line]"/>
+                                            </t>
+                                        </t>
+                                        <t t-elif="transfer.banques == bank_name">
+                                            <!-- Si pas de répartition et correspond à cette banque -->
+                                            <tr>
+                                                <td><span t-field="transfer.matricule"/></td>
+                                                <td><span t-field="transfer.name"/></td>
+                                                <td><span t-field="transfer.code_banque"/></td>
+                                                <td><span t-field="transfer.bank_account_id.acc_number"/></td>
+                                                <td class="text-end">
+                                                    <span t-field="transfer.salaire" 
+                                                          t-options='{"widget": "monetary", "display_currency": transfer.currency_id}'/>
+                                                </td>
+                                            </tr>
+                                            <t t-set="bank_total" t-value="bank_total + transfer.salaire"/>
+                                        </t>
+                                    </t>
+                                    
+                                    <!-- Sous-total de la banque -->
+                                    <tr style="background-color: #E9ECEF; font-weight: bold; color: #212529;">
+                                        <td colspan="4" class="text-end" style="border-color: #CED4DA;">SOUS-TOTAL <span t-esc="bank_name"/>:</td>
+                                        <td class="text-end" style="border-color: #CED4DA;">
+                                            <t t-set="bank_total_calc" t-value="sum(line.amount for line in bank_lines) + bank_total"/>
+                                            <t t-set="dummy2" t-value="all_subtotals.append(bank_total_calc)"/>
+                                            <span t-esc="'%.2f' % bank_total_calc"/>
+                                            <t t-if="docs"> <span t-field="docs[0].currency_id.symbol"/></t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <!-- Total général (somme des sous-totaux) -->
+                    <div class="mt-4">
+                        <table class="table table-sm" style="border-color: #CED4DA;">
+                            <tr style="background-color: #4A90E2; color: white; font-weight: bold; font-size: 16px; border-radius: 4px;">
+                                <td class="text-end" style="padding: 15px; border-color: #4A90E2;">TOTAL GÉNÉRAL:</td>
+                                <td class="text-end" style="padding: 15px; width: 150px; border-color: #4A90E2;">
+                                    <t t-set="total_general" t-value="sum(all_subtotals)"/>
+                                    <span t-esc="'%.2f' % total_general"/>
+                                    <t t-if="docs"> <span t-field="docs[0].currency_id.symbol"/></t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
