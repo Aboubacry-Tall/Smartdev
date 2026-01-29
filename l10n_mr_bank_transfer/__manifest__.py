@@ -1,5 +1,5 @@
 {
-    'name': 'Journal de virement bancaire',
+    'name': 'Virement Bancaire',
     'summary': 'Module pour gérer le journal de virement bancaire',
     'description': 'Module pour gérer le journal de virement bancaire avec les informations des employés',
     'category': 'Human Resources/Payroll',

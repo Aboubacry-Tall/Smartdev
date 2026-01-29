@@ -5,13 +5,30 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
+            <!-- Hide fields on the Sale Order form -->
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='validity_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Cacher les colonnes prix dans les lignes de commande pour les techniciens -->
+            <xpath expr="//notebook/page[@name='order_lines']//field[@name='order_line']//field[@name='price_unit']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='order_lines']//field[@name='order_line']//field[@name='price_subtotal']" position="attributes">
+                <attribute name="groups">!wg_management.group_technicien</attribute>
+            </xpath>
+            
+            
             <field name="payment_term_id" position="after">
                 <field name="technicien_ids" 
                        widget="many2many_tags"
                        options="{'no_create': True}"
-                       placeholder="Sélectionner les techniciens..." required="True"/>
+                       placeholder="Sélectionner les techniciens..." invisible="1" />
                 <field name="rejection_motif_id" 
-                       placeholder="Sélectionner un motif de rejet..."/>
+                       placeholder="Sélectionner un motif de rejet..." invisible="state == 'draft'" />
             </field>
             <field name="partner_id" position="after">
                 <field name="longitude" required="True"/>
@@ -23,4 +40,3 @@
         </field>
     </record>
 </odoo>
-

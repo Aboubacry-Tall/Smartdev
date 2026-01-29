@@ -19,7 +19,6 @@ class SaleOrder(models.Model):
     technicien_ids = fields.Many2many(
         'res.users',
         string='Techniciens',
-        domain=_domain_technicien_ids,
         help='Techniciens qui vont étudier ce devis'
     )
     
@@ -32,20 +31,33 @@ class SaleOrder(models.Model):
     longitude = fields.Char(string='Longitude', help='Coordonnée de longitude')
     latitude = fields.Char(string='Latitude', help='Coordonnée de latitude')
     
+    hide_prices_for_technicien = fields.Boolean(
+        string='Cacher les prix (technicien)',
+        compute='_compute_hide_prices_for_technicien',
+    )
+    
+    @api.depends()
+    def _compute_hide_prices_for_technicien(self):
+        is_technicien = self.env.user.has_group('wg_management.group_technicien')
+        for order in self:
+            order.hide_prices_for_technicien = is_technicien
+    
     @api.model_create_multi
     def create(self, vals_list):
         """Créer les activités pour les techniciens lors de la création du devis"""
         orders = super().create(vals_list)
         
         for order in orders:
-            if order.technicien_ids:
-                order._create_technicien_activities()
+            # Créer les activités pour tous les techniciens du groupe
+            order._create_technicien_activities()
         
         return orders
     
     def _create_technicien_activities(self):
-        """Créer les activités pour tous les techniciens du devis"""
-        if not self.technicien_ids:
+        """Créer les activités pour tous les utilisateurs ayant le rôle technicien"""
+        # Récupérer tous les utilisateurs du groupe technicien
+        group_technicien = self.env.ref('wg_management.group_technicien', raise_if_not_found=False)
+        if not group_technicien or not group_technicien.user_ids:
             return
         
         # Type d'activité par défaut
@@ -58,7 +70,7 @@ class SaleOrder(models.Model):
         if not res_model:
             return
         
-        for technicien in self.technicien_ids:
+        for technicien in group_technicien.user_ids:
             # Créer l'activité pour chaque technicien
             self.env['mail.activity'].create({
                 'activity_type_id': activity_type.id,
@@ -67,7 +79,7 @@ class SaleOrder(models.Model):
                 'user_id': technicien.id,
                 'res_id': self.id,
                 'res_model_id': res_model.id,
-                'date_deadline': fields.Date.today() + timedelta(days=3),
+                'date_deadline': fields.Date.today(),
             })
     
     def action_confirm(self):
