@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="res.groups.privilege" id="res_groups_privilege_access_management">
+            <field name="name">Access Management</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="group_dg_read_all" model="res.groups">
+            <field name="name">DG READ ALL</field>
+            <field name="privilege_id" ref="res_groups_privilege_access_management"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Accès en lecture globale (DG).</field>
+        </record>
+    </data>
+
+    <!-- Règle : DG READ ALL peut voir tous les devis/commandes (lecture seule) -->
+    <data noupdate="1">
+        <record id="sale_order_rule_dg_read_all" model="ir.rule">
+            <field name="name">Devis / Commandes : tous les documents (DG lecture seule)</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="sale_order_line_rule_dg_read_all" model="ir.rule">
+            <field name="name">Lignes de devis : tous les documents (DG lecture seule)</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>
+

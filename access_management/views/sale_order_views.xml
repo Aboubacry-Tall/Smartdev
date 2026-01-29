@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Liste : masquer le bouton Créer pour DG READ ALL (vue primaire réservée au groupe) -->
+    <record id="view_order_tree_dg_read_only" model="ir.ui.view">
+        <field name="name">sale.order.tree.dg.read.only</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_tree"/>
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="group_ids" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="create">0</attribute>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban : masquer la création rapide pour DG READ ALL (vue primaire réservée au groupe) -->
+    <record id="view_order_kanban_dg_read_only" model="ir.ui.view">
+        <field name="name">sale.order.kanban.dg.read.only</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sale_order_kanban"/>
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="group_ids" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+        <field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="create">0</attribute>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action Devis (lecture seule) : utilise nos vues sans bouton Créer, réservée au groupe DG READ ALL -->
+    <record id="action_quotations_dg_read_only" model="ir.actions.act_window">
+        <field name="name">Devis (lecture seule)</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="context">{'search_default_draft': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Consultez les devis et commandes.</p>
+        </field>
+    </record>
+
+    <!-- Lier l'action à nos vues liste et kanban (sans Créer) -->
+    <record id="action_quotations_dg_read_only_view_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_order_tree_dg_read_only"/>
+        <field name="act_window_id" ref="action_quotations_dg_read_only"/>
+    </record>
+    <record id="action_quotations_dg_read_only_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_order_kanban_dg_read_only"/>
+        <field name="act_window_id" ref="action_quotations_dg_read_only"/>
+    </record>
+    <record id="action_quotations_dg_read_only_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sale.view_order_form"/>
+        <field name="act_window_id" ref="action_quotations_dg_read_only"/>
+    </record>
+
+    <!-- Menu Devis visible uniquement par DG READ ALL (ouvre l'action sans bouton Créer) -->
+    <menuitem id="menu_sale_quotations_dg_read_only"
+        name="Devis"
+        parent="sale.sale_order_menu"
+        action="action_quotations_dg_read_only"
+        groups="access_management.group_dg_read_all"
+        sequence="10"/>
+</odoo>
