@@ -11,6 +11,7 @@
         "account",
         "sale_subscription",
         "project",
+        "product",
         "helpdesk",
         "hr",
         "hr_payroll",

@@ -18,6 +18,9 @@ class ProjectProject(models.Model):
     def _pmo_no_delete(self) -> bool:
         return (not self.env.su) and self.env.user.has_group("access_management.group_pmo")
 
+    def _df_manager_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_df_manager")
+
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
         result = super().get_view(view_id=view_id, view_type=view_type, **options)
@@ -47,6 +50,8 @@ class ProjectProject(models.Model):
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des projets."))
         if self._pmo_no_delete():
             raise AccessError(_("Le groupe PMO n'est pas autorisé à supprimer des projets."))
+        if self._df_manager_no_delete():
+            raise AccessError(_("Le groupe DF MANAGER n'est pas autorisé à supprimer des projets."))
         return super().unlink()
 
 
@@ -61,6 +66,9 @@ class ProjectTask(models.Model):
 
     def _pmo_no_delete(self) -> bool:
         return (not self.env.su) and self.env.user.has_group("access_management.group_pmo")
+
+    def _df_manager_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_df_manager")
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
@@ -91,4 +99,6 @@ class ProjectTask(models.Model):
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des tâches."))
         if self._pmo_no_delete():
             raise AccessError(_("Le groupe PMO n'est pas autorisé à supprimer des tâches."))
+        if self._df_manager_no_delete():
+            raise AccessError(_("Le groupe DF MANAGER n'est pas autorisé à supprimer des tâches."))
         return super().unlink()

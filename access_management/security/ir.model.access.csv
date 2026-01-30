@@ -61,3 +61,10 @@ access_sale_subscription_plan_bd_manager,sale.subscription.plan BD MANAGER,sale_
 access_sale_report_bd_manager,sale.report BD MANAGER,sale.model_sale_report,access_management.group_bd_manager,1,0,0,0
 access_crm_lead_siha_agent,crm.lead SI7A AGENT,crm.model_crm_lead,access_management.group_siha_agent,1,0,0,0
 access_res_partner_siha_agent,res.partner SI7A AGENT,base.model_res_partner,access_management.group_siha_agent,1,0,0,0
+access_project_project_df_manager,project.project DF MANAGER,project.model_project_project,access_management.group_df_manager,1,1,1,0
+access_project_task_df_manager,project.task DF MANAGER,project.model_project_task,access_management.group_df_manager,1,1,1,0
+access_product_template_df_manager,product.template DF MANAGER,product.model_product_template,access_management.group_df_manager,1,1,1,0
+access_product_product_df_manager,product.product DF MANAGER,product.model_product_product,access_management.group_df_manager,1,1,1,0
+access_project_milestone_df_manager,project.milestone DF MANAGER,project.model_project_milestone,access_management.group_df_manager,1,1,1,0
+access_helpdesk_ticket_df_manager,helpdesk.ticket DF MANAGER,helpdesk.model_helpdesk_ticket,access_management.group_df_manager,1,0,0,0
+access_helpdesk_team_df_manager,helpdesk.team DF MANAGER,helpdesk.model_helpdesk_team,access_management.group_df_manager,1,0,0,0

@@ -4,6 +4,8 @@ from . import res_partner
 from . import account_move
 from . import account_analytic_line
 from . import project
+from . import project_milestone
+from . import product
 from . import helpdesk_ticket
 from . import hr_employee
 from . import hr_payslip
