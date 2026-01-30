@@ -6,10 +6,10 @@ from odoo.exceptions import AccessError
 from lxml import etree
 
 
-class HrEmployee(models.Model):
-    _inherit = "hr.employee"
+class IrLogging(models.Model):
+    _inherit = "ir.logging"
 
-    def _dg_read_all_active(self) -> bool:
+    def _read_only_group_active(self) -> bool:
         return (not self.env.su) and (
             self.env.user.has_group("access_management.group_dg_read_all")
             or self.env.user.has_group("access_management.group_audit")
@@ -19,7 +19,7 @@ class HrEmployee(models.Model):
     def get_view(self, view_id=None, view_type="form", **options):
         result = super().get_view(view_id=view_id, view_type=view_type, **options)
 
-        if self._dg_read_all_active() and view_type in {"list", "kanban", "form"}:
+        if self._read_only_group_active() and view_type in {"list", "kanban", "form"}:
             node = etree.fromstring(result["arch"])
             node.set("create", "0")
             node.set("edit", "0")
@@ -30,16 +30,16 @@ class HrEmployee(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        if self._dg_read_all_active():
-            raise AccessError(_("Vous n'êtes pas autorisé à créer des employés."))
+        if self._read_only_group_active():
+            raise AccessError(_("Vous n'êtes pas autorisé à créer des logs."))
         return super().create(vals_list)
 
     def write(self, vals):
-        if self._dg_read_all_active():
-            raise AccessError(_("Vous n'êtes pas autorisé à modifier des employés."))
+        if self._read_only_group_active():
+            raise AccessError(_("Vous n'êtes pas autorisé à modifier des logs."))
         return super().write(vals)
 
     def unlink(self):
-        if self._dg_read_all_active():
-            raise AccessError(_("Vous n'êtes pas autorisé à supprimer des employés."))
+        if self._read_only_group_active():
+            raise AccessError(_("Vous n'êtes pas autorisé à supprimer des logs."))
         return super().unlink()

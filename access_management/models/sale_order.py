@@ -10,8 +10,10 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     def _dg_read_all_active(self) -> bool:
-        # DG READ ALL must stay read-only even if other groups grant rights.
-        return (not self.env.su) and self.env.user.has_group("access_management.group_dg_read_all")
+        return (not self.env.su) and (
+            self.env.user.has_group("access_management.group_dg_read_all")
+            or self.env.user.has_group("access_management.group_audit")
+        )
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
@@ -48,7 +50,10 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     def _dg_read_all_active(self) -> bool:
-        return (not self.env.su) and self.env.user.has_group("access_management.group_dg_read_all")
+        return (not self.env.su) and (
+            self.env.user.has_group("access_management.group_dg_read_all")
+            or self.env.user.has_group("access_management.group_audit")
+        )
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):

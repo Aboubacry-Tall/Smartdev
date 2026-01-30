@@ -10,7 +10,10 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     def _dg_read_all_active(self) -> bool:
-        return (not self.env.su) and self.env.user.has_group("access_management.group_dg_read_all")
+        return (not self.env.su) and (
+            self.env.user.has_group("access_management.group_dg_read_all")
+            or self.env.user.has_group("access_management.group_audit")
+        )
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
@@ -46,7 +49,10 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     def _dg_read_all_active(self) -> bool:
-        return (not self.env.su) and self.env.user.has_group("access_management.group_dg_read_all")
+        return (not self.env.su) and (
+            self.env.user.has_group("access_management.group_dg_read_all")
+            or self.env.user.has_group("access_management.group_audit")
+        )
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):

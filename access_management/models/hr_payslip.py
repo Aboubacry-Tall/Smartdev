@@ -10,7 +10,10 @@ class HrPayslip(models.Model):
     _inherit = "hr.payslip"
 
     def _dg_read_all_active(self) -> bool:
-        return (not self.env.su) and self.env.user.has_group("access_management.group_dg_read_all")
+        return (not self.env.su) and (
+            self.env.user.has_group("access_management.group_dg_read_all")
+            or self.env.user.has_group("access_management.group_audit")
+        )
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
@@ -46,7 +49,10 @@ class HrPayslipLine(models.Model):
     _inherit = "hr.payslip.line"
 
     def _dg_read_all_active(self) -> bool:
-        return (not self.env.su) and self.env.user.has_group("access_management.group_dg_read_all")
+        return (not self.env.su) and (
+            self.env.user.has_group("access_management.group_dg_read_all")
+            or self.env.user.has_group("access_management.group_audit")
+        )
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
@@ -82,7 +88,10 @@ class HrPayslipRun(models.Model):
     _inherit = "hr.payslip.run"
 
     def _dg_read_all_active(self) -> bool:
-        return (not self.env.su) and self.env.user.has_group("access_management.group_dg_read_all")
+        return (not self.env.su) and (
+            self.env.user.has_group("access_management.group_dg_read_all")
+            or self.env.user.has_group("access_management.group_audit")
+        )
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):

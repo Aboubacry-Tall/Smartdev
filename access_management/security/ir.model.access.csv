@@ -24,3 +24,23 @@ access_marketing_activity_dg_read_all,marketing.activity DG READ ALL,marketing_a
 access_marketing_participant_dg_read_all,marketing.participant DG READ ALL,marketing_automation.model_marketing_participant,access_management.group_dg_read_all,1,0,0,0
 access_sale_report_dg_read_all,sale.report DG READ ALL,sale.model_sale_report,access_management.group_dg_read_all,1,0,0,0
 access_account_invoice_report_dg_read_all,account.invoice.report DG READ ALL,account.model_account_invoice_report,access_management.group_dg_read_all,1,0,0,0
+access_ir_logging_dg_read_all,ir.logging DG READ ALL,base.model_ir_logging,access_management.group_dg_read_all,1,0,0,0
+access_sale_order_audit,sale.order AUDIT,sale.model_sale_order,access_management.group_audit,1,0,0,0
+access_sale_order_line_audit,sale.order.line AUDIT,sale.model_sale_order_line,access_management.group_audit,1,0,0,0
+access_crm_lead_audit,crm.lead AUDIT,crm.model_crm_lead,access_management.group_audit,1,0,0,0
+access_account_move_audit,account.move AUDIT,account.model_account_move,access_management.group_audit,1,0,0,0
+access_account_move_line_audit,account.move.line AUDIT,account.model_account_move_line,access_management.group_audit,1,0,0,0
+access_account_journal_audit,account.journal AUDIT,account.model_account_journal,access_management.group_audit,1,0,0,0
+access_account_account_audit,account.account AUDIT,account.model_account_account,access_management.group_audit,1,0,0,0
+access_account_payment_audit,account.payment AUDIT,account.model_account_payment,access_management.group_audit,1,0,0,0
+access_sale_subscription_plan_audit,sale.subscription.plan AUDIT,sale_subscription.model_sale_subscription_plan,access_management.group_audit,1,0,0,0
+access_project_project_audit,project.project AUDIT,project.model_project_project,access_management.group_audit,1,0,0,0
+access_project_task_audit,project.task AUDIT,project.model_project_task,access_management.group_audit,1,0,0,0
+access_helpdesk_ticket_audit,helpdesk.ticket AUDIT,helpdesk.model_helpdesk_ticket,access_management.group_audit,1,0,0,0
+access_helpdesk_team_audit,helpdesk.team AUDIT,helpdesk.model_helpdesk_team,access_management.group_audit,1,0,0,0
+access_hr_employee_audit,hr.employee AUDIT,hr.model_hr_employee,access_management.group_audit,1,0,0,0
+access_hr_department_audit,hr.department AUDIT,hr.model_hr_department,access_management.group_audit,1,0,0,0
+access_hr_payslip_audit,hr.payslip AUDIT,hr_payroll.model_hr_payslip,access_management.group_audit,1,0,0,0
+access_hr_payslip_line_audit,hr.payslip.line AUDIT,hr_payroll.model_hr_payslip_line,access_management.group_audit,1,0,0,0
+access_hr_payslip_run_audit,hr.payslip.run AUDIT,hr_payroll.model_hr_payslip_run,access_management.group_audit,1,0,0,0
+access_ir_logging_audit,ir.logging AUDIT,base.model_ir_logging,access_management.group_audit,1,0,0,0

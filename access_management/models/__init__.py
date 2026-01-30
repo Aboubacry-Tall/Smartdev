@@ -7,4 +7,5 @@ from . import hr_employee
 from . import hr_payslip
 from . import website
 from . import marketing
+from . import ir_logging
 
