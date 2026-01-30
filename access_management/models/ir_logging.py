@@ -13,6 +13,7 @@ class IrLogging(models.Model):
         return (not self.env.su) and (
             self.env.user.has_group("access_management.group_dg_read_all")
             or self.env.user.has_group("access_management.group_audit")
+            or self.env.user.has_group("access_management.group_support_n2")
         )
 
     @api.model

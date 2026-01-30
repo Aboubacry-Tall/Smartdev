@@ -74,3 +74,8 @@ access_helpdesk_ticket_dev,helpdesk.ticket DEV,helpdesk.model_helpdesk_ticket,ac
 access_project_project_support_n1,project.project SUPPORT N1,project.model_project_project,access_management.group_support_n1,1,0,0,0
 access_project_task_support_n1,project.task SUPPORT N1,project.model_project_task,access_management.group_support_n1,1,1,0,0
 access_helpdesk_ticket_support_n1,helpdesk.ticket SUPPORT N1,helpdesk.model_helpdesk_ticket,access_management.group_support_n1,1,1,0,0
+access_helpdesk_ticket_support_n2,helpdesk.ticket SUPPORT N2,helpdesk.model_helpdesk_ticket,access_management.group_support_n2,1,1,0,0
+access_helpdesk_team_support_n2,helpdesk.team SUPPORT N2,helpdesk.model_helpdesk_team,access_management.group_support_n2,1,0,0,0
+access_project_project_support_n2,project.project SUPPORT N2,project.model_project_project,access_management.group_support_n2,1,0,0,0
+access_project_task_support_n2,project.task SUPPORT N2,project.model_project_task,access_management.group_support_n2,1,0,0,0
+access_ir_logging_support_n2,ir.logging SUPPORT N2,base.model_ir_logging,access_management.group_support_n2,1,0,0,0

@@ -27,11 +27,14 @@ class ProjectProject(models.Model):
     def _support_n1_read_only(self) -> bool:
         return (not self.env.su) and self.env.user.has_group("access_management.group_support_n1")
 
+    def _support_n2_read_only(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_support_n2")
+
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
         result = super().get_view(view_id=view_id, view_type=view_type, **options)
 
-        if (self._dg_read_all_active() or self._dev_read_only() or self._support_n1_read_only()) and view_type in {"list", "kanban", "form"}:
+        if (self._dg_read_all_active() or self._dev_read_only() or self._support_n1_read_only() or self._support_n2_read_only()) and view_type in {"list", "kanban", "form"}:
             node = etree.fromstring(result["arch"])
             node.set("create", "0")
             node.set("edit", "0")
@@ -42,12 +45,12 @@ class ProjectProject(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        if self._dg_read_all_active() or self._dev_read_only() or self._support_n1_read_only():
+        if self._dg_read_all_active() or self._dev_read_only() or self._support_n1_read_only() or self._support_n2_read_only():
             raise AccessError(_("Vous n'êtes pas autorisé à créer des projets."))
         return super().create(vals_list)
 
     def write(self, vals):
-        if self._dg_read_all_active() or self._dev_read_only() or self._support_n1_read_only():
+        if self._dg_read_all_active() or self._dev_read_only() or self._support_n1_read_only() or self._support_n2_read_only():
             raise AccessError(_("Vous n'êtes pas autorisé à modifier des projets."))
         return super().write(vals)
 
@@ -58,7 +61,7 @@ class ProjectProject(models.Model):
             raise AccessError(_("Le groupe PMO n'est pas autorisé à supprimer des projets."))
         if self._df_manager_no_delete():
             raise AccessError(_("Le groupe DF MANAGER n'est pas autorisé à supprimer des projets."))
-        if self._dev_read_only() or self._support_n1_read_only():
+        if self._dev_read_only() or self._support_n1_read_only() or self._support_n2_read_only():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des projets."))
         return super().unlink()
 
@@ -84,11 +87,14 @@ class ProjectTask(models.Model):
     def _support_n1_no_create_delete(self) -> bool:
         return (not self.env.su) and self.env.user.has_group("access_management.group_support_n1")
 
+    def _support_n2_read_only(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_support_n2")
+
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
         result = super().get_view(view_id=view_id, view_type=view_type, **options)
 
-        if self._dg_read_all_active() and view_type in {"list", "kanban", "form"}:
+        if (self._dg_read_all_active() or self._support_n2_read_only()) and view_type in {"list", "kanban", "form"}:
             node = etree.fromstring(result["arch"])
             node.set("create", "0")
             node.set("edit", "0")
@@ -104,12 +110,12 @@ class ProjectTask(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        if self._dg_read_all_active() or self._dev_no_create_delete() or self._support_n1_no_create_delete():
+        if self._dg_read_all_active() or self._dev_no_create_delete() or self._support_n1_no_create_delete() or self._support_n2_read_only():
             raise AccessError(_("Vous n'êtes pas autorisé à créer des tâches."))
         return super().create(vals_list)
 
     def write(self, vals):
-        if self._dg_read_all_active():
+        if self._dg_read_all_active() or self._support_n2_read_only():
             raise AccessError(_("Vous n'êtes pas autorisé à modifier des tâches."))
         return super().write(vals)
 
@@ -120,6 +126,6 @@ class ProjectTask(models.Model):
             raise AccessError(_("Le groupe PMO n'est pas autorisé à supprimer des tâches."))
         if self._df_manager_no_delete():
             raise AccessError(_("Le groupe DF MANAGER n'est pas autorisé à supprimer des tâches."))
-        if self._dev_no_create_delete() or self._support_n1_no_create_delete():
+        if self._dev_no_create_delete() or self._support_n1_no_create_delete() or self._support_n2_read_only():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des tâches."))
         return super().unlink()
