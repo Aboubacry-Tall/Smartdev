@@ -33,6 +33,13 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">CRM, Leads, Opportunités, Devis, Clients : lecture, création, modification (sans suppression). Produits, Abonnements, Reporting : lecture seule.</field>
         </record>
+
+        <record id="group_siha_agent" model="res.groups">
+            <field name="name">SI7A AGENT</field>
+            <field name="privilege_id" ref="res_groups_privilege_access_management"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Leads (assignés), Opportunités (assignées), Clients (lecture limitée), Commissions : lecture seule.</field>
+        </record>
     </data>
 
     <!-- Règles ir.rule : DG READ ALL et AUDIT peuvent voir TOUS les enregistrements (lecture seule) -->
@@ -314,6 +321,28 @@
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- SI7A AGENT : Leads / Opportunités assignés, Clients lecture limitée (lecture seule) -->
+        <record id="crm_lead_rule_siha_agent" model="ir.rule">
+            <field name="name">Leads / Opportunités : assignés à l'utilisateur (SI7A AGENT)</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_siha_agent'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="res_partner_rule_siha_agent" model="ir.rule">
+            <field name="name">Clients : lecture limitée (SI7A AGENT)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_siha_agent'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
     </data>
