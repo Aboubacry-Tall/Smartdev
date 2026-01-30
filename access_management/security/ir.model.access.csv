@@ -95,3 +95,8 @@ access_hr_leave_rh,hr.leave RH,hr_holidays.model_hr_leave,access_management.grou
 access_hr_leave_allocation_rh,hr.leave.allocation RH,hr_holidays.model_hr_leave_allocation,access_management.group_rh,1,1,1,0
 access_hr_applicant_rh,hr.applicant RH,hr_recruitment.model_hr_applicant,access_management.group_rh,1,1,1,0
 access_hr_job_rh,hr.job RH,hr.model_hr_job,access_management.group_rh,1,1,1,0
+access_hr_payslip_paie,hr.payslip PAIE,hr_payroll.model_hr_payslip,access_management.group_paie,1,1,1,0
+access_hr_payslip_line_paie,hr.payslip.line PAIE,hr_payroll.model_hr_payslip_line,access_management.group_paie,1,1,1,0
+access_hr_payslip_run_paie,hr.payslip.run PAIE,hr_payroll.model_hr_payslip_run,access_management.group_paie,1,1,1,0
+access_hr_employee_paie,hr.employee PAIE,hr.model_hr_employee,access_management.group_paie,1,0,0,0
+access_hr_version_paie,hr.version PAIE,hr.model_hr_version,access_management.group_paie,1,0,0,0

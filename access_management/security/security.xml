@@ -82,6 +82,13 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">Employés, Contrats, Congés, Recrutement : lecture, création, modification (sans suppression).</field>
         </record>
+
+        <record id="group_paie" model="res.groups">
+            <field name="name">PAIE</field>
+            <field name="privilege_id" ref="res_groups_privilege_access_management"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Paie : lecture, création, modification (sans suppression). Employés et Contrats : lecture seule.</field>
+        </record>
     </data>
 
     <!-- Règles ir.rule : DG READ ALL et AUDIT peuvent voir TOUS les enregistrements (lecture seule) -->
@@ -728,6 +735,58 @@
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- PAIE : Paie (lecture, création, modification, pas de suppression) ; Employés et Contrats (lecture seule) -->
+        <record id="hr_payslip_rule_paie" model="ir.rule">
+            <field name="name">Bulletins de paie : tous (PAIE)</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_paie'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="hr_payslip_line_rule_paie" model="ir.rule">
+            <field name="name">Lignes de paie : tous (PAIE)</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_paie'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="hr_payslip_run_rule_paie" model="ir.rule">
+            <field name="name">Lots de paie : tous (PAIE)</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip_run"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_paie'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="hr_employee_rule_paie" model="ir.rule">
+            <field name="name">Employés : tous (PAIE lecture seule)</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_paie'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="hr_version_rule_paie" model="ir.rule">
+            <field name="name">Contrats (versions) : tous (PAIE lecture seule)</field>
+            <field name="model_id" ref="hr.model_hr_version"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_paie'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
     </data>
