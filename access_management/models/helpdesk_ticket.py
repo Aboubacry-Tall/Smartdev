@@ -18,6 +18,9 @@ class HelpdeskTicket(models.Model):
     def _dev_no_create_delete(self) -> bool:
         return (not self.env.su) and self.env.user.has_group("access_management.group_dev")
 
+    def _support_n1_no_create_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_support_n1")
+
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
         result = super().get_view(view_id=view_id, view_type=view_type, **options)
@@ -28,7 +31,7 @@ class HelpdeskTicket(models.Model):
             node.set("edit", "0")
             node.set("delete", "0")
             result["arch"] = etree.tostring(node, encoding="unicode")
-        elif self._dev_no_create_delete() and view_type in {"list", "kanban", "form"}:
+        elif (self._dev_no_create_delete() or self._support_n1_no_create_delete()) and view_type in {"list", "kanban", "form"}:
             node = etree.fromstring(result["arch"])
             node.set("create", "0")
             node.set("delete", "0")
@@ -38,7 +41,7 @@ class HelpdeskTicket(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        if self._dg_read_all_active() or self._dev_no_create_delete():
+        if self._dg_read_all_active() or self._dev_no_create_delete() or self._support_n1_no_create_delete():
             raise AccessError(_("Vous n'êtes pas autorisé à créer des tickets helpdesk."))
         return super().create(vals_list)
 
@@ -50,6 +53,6 @@ class HelpdeskTicket(models.Model):
     def unlink(self):
         if self._dg_read_all_active():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des tickets helpdesk."))
-        if self._dev_no_create_delete():
-            raise AccessError(_("Le groupe DEV n'est pas autorisé à supprimer des tickets helpdesk."))
+        if self._dev_no_create_delete() or self._support_n1_no_create_delete():
+            raise AccessError(_("Vous n'êtes pas autorisé à supprimer des tickets helpdesk."))
         return super().unlink()

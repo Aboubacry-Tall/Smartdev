@@ -71,3 +71,6 @@ access_helpdesk_team_df_manager,helpdesk.team DF MANAGER,helpdesk.model_helpdesk
 access_project_project_dev,project.project DEV,project.model_project_project,access_management.group_dev,1,0,0,0
 access_project_task_dev,project.task DEV,project.model_project_task,access_management.group_dev,1,1,0,0
 access_helpdesk_ticket_dev,helpdesk.ticket DEV,helpdesk.model_helpdesk_ticket,access_management.group_dev,1,1,0,0
+access_project_project_support_n1,project.project SUPPORT N1,project.model_project_project,access_management.group_support_n1,1,0,0,0
+access_project_task_support_n1,project.task SUPPORT N1,project.model_project_task,access_management.group_support_n1,1,1,0,0
+access_helpdesk_ticket_support_n1,helpdesk.ticket SUPPORT N1,helpdesk.model_helpdesk_ticket,access_management.group_support_n1,1,1,0,0
