@@ -15,6 +15,8 @@
         "helpdesk",
         "hr",
         "hr_payroll",
+        "hr_holidays",
+        "hr_recruitment",
         "website",
         "marketing_automation",
     ],

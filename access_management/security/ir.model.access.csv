@@ -88,3 +88,10 @@ access_sale_subscription_plan_finance,sale.subscription.plan FINANCE,sale_subscr
 access_account_invoice_report_finance,account.invoice.report FINANCE,account.model_account_invoice_report,access_management.group_finance,1,0,0,0
 access_res_partner_finance,res.partner FINANCE,base.model_res_partner,access_management.group_finance,1,0,0,0
 access_crm_lead_finance,crm.lead FINANCE,crm.model_crm_lead,access_management.group_finance,1,0,0,0
+access_hr_employee_rh,hr.employee RH,hr.model_hr_employee,access_management.group_rh,1,1,1,0
+access_hr_department_rh,hr.department RH,hr.model_hr_department,access_management.group_rh,1,1,1,0
+access_hr_version_rh,hr.version RH,hr.model_hr_version,access_management.group_rh,1,1,1,0
+access_hr_leave_rh,hr.leave RH,hr_holidays.model_hr_leave,access_management.group_rh,1,1,1,0
+access_hr_leave_allocation_rh,hr.leave.allocation RH,hr_holidays.model_hr_leave_allocation,access_management.group_rh,1,1,1,0
+access_hr_applicant_rh,hr.applicant RH,hr_recruitment.model_hr_applicant,access_management.group_rh,1,1,1,0
+access_hr_job_rh,hr.job RH,hr.model_hr_job,access_management.group_rh,1,1,1,0

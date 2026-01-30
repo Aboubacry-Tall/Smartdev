@@ -9,6 +9,9 @@ from . import project_milestone
 from . import product
 from . import helpdesk_ticket
 from . import hr_employee
+from . import hr_version
+from . import hr_leave
+from . import hr_applicant
 from . import hr_payslip
 from . import website
 from . import marketing

@@ -15,6 +15,9 @@ class HrEmployee(models.Model):
             or self.env.user.has_group("access_management.group_audit")
         )
 
+    def _rh_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_rh")
+
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
         result = super().get_view(view_id=view_id, view_type=view_type, **options)
@@ -42,4 +45,6 @@ class HrEmployee(models.Model):
     def unlink(self):
         if self._dg_read_all_active():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des employés."))
+        if self._rh_no_delete():
+            raise AccessError(_("Le groupe RH n'est pas autorisé à supprimer des employés."))
         return super().unlink()
