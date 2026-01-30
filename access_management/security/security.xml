@@ -14,10 +14,11 @@
         </record>
     </data>
 
-    <!-- Règle : DG READ ALL peut voir tous les devis/commandes (lecture seule) -->
+    <!-- Règles ir.rule : DG READ ALL peut voir TOUS les enregistrements (lecture seule) -->
     <data noupdate="1">
+        <!-- Ventes / Devis -->
         <record id="sale_order_rule_dg_read_all" model="ir.rule">
-            <field name="name">Devis / Commandes : tous les documents (DG lecture seule)</field>
+            <field name="name">Devis / Commandes : tous (DG lecture seule)</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
@@ -27,8 +28,146 @@
             <field name="perm_unlink" eval="False"/>
         </record>
         <record id="sale_order_line_rule_dg_read_all" model="ir.rule">
-            <field name="name">Lignes de devis : tous les documents (DG lecture seule)</field>
+            <field name="name">Lignes de devis : tous (DG lecture seule)</field>
             <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- CRM -->
+        <record id="crm_lead_rule_dg_read_all" model="ir.rule">
+            <field name="name">CRM Leads : tous (DG lecture seule)</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Comptabilité / Facturation -->
+        <record id="account_move_rule_dg_read_all" model="ir.rule">
+            <field name="name">Écritures comptables : tous (DG lecture seule)</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="account_move_line_rule_dg_read_all" model="ir.rule">
+            <field name="name">Lignes comptables : tous (DG lecture seule)</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Projets -->
+        <record id="project_project_rule_dg_read_all" model="ir.rule">
+            <field name="name">Projets : tous (DG lecture seule)</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Tâches -->
+        <record id="project_task_rule_dg_read_all" model="ir.rule">
+            <field name="name">Tâches : tous (DG lecture seule)</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Helpdesk -->
+        <record id="helpdesk_ticket_rule_dg_read_all" model="ir.rule">
+            <field name="name">Tickets Helpdesk : tous (DG lecture seule)</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- RH -->
+        <record id="hr_employee_rule_dg_read_all" model="ir.rule">
+            <field name="name">Employés : tous (DG lecture seule)</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Paie -->
+        <record id="hr_payslip_rule_dg_read_all" model="ir.rule">
+            <field name="name">Bulletins de paie : tous (DG lecture seule)</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="hr_payslip_run_rule_dg_read_all" model="ir.rule">
+            <field name="name">Lots de paie : tous (DG lecture seule)</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip_run"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Website -->
+        <record id="website_page_rule_dg_read_all" model="ir.rule">
+            <field name="name">Pages web : tous (DG lecture seule)</field>
+            <field name="model_id" ref="website.model_website_page"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Marketing -->
+        <record id="marketing_campaign_rule_dg_read_all" model="ir.rule">
+            <field name="name">Campagnes marketing : tous (DG lecture seule)</field>
+            <field name="model_id" ref="marketing_automation.model_marketing_campaign"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="marketing_activity_rule_dg_read_all" model="ir.rule">
+            <field name="name">Activités marketing : tous (DG lecture seule)</field>
+            <field name="model_id" ref="marketing_automation.model_marketing_activity"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('access_management.group_dg_read_all'))]"/>
             <field name="perm_read" eval="True"/>
