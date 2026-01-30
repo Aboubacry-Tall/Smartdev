@@ -68,3 +68,6 @@ access_product_product_df_manager,product.product DF MANAGER,product.model_produ
 access_project_milestone_df_manager,project.milestone DF MANAGER,project.model_project_milestone,access_management.group_df_manager,1,1,1,0
 access_helpdesk_ticket_df_manager,helpdesk.ticket DF MANAGER,helpdesk.model_helpdesk_ticket,access_management.group_df_manager,1,0,0,0
 access_helpdesk_team_df_manager,helpdesk.team DF MANAGER,helpdesk.model_helpdesk_team,access_management.group_df_manager,1,0,0,0
+access_project_project_dev,project.project DEV,project.model_project_project,access_management.group_dev,1,0,0,0
+access_project_task_dev,project.task DEV,project.model_project_task,access_management.group_dev,1,1,0,0
+access_helpdesk_ticket_dev,helpdesk.ticket DEV,helpdesk.model_helpdesk_ticket,access_management.group_dev,1,1,0,0
