@@ -39,7 +39,12 @@ class CrmLead(models.Model):
             raise AccessError(_("Vous n'êtes pas autorisé à modifier des opportunités/pistes CRM."))
         return super().write(vals)
 
+    def _bd_manager_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_bd_manager")
+
     def unlink(self):
         if self._dg_read_all_active():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des opportunités/pistes CRM."))
+        if self._bd_manager_no_delete():
+            raise AccessError(_("Le groupe BD MANAGER n'est pas autorisé à supprimer des leads/opportunités."))
         return super().unlink()

@@ -1,5 +1,6 @@
 from . import sale_order
 from . import crm_lead
+from . import res_partner
 from . import account_move
 from . import account_analytic_line
 from . import project

@@ -51,3 +51,11 @@ access_crm_lead_pmo,crm.lead PMO,crm.model_crm_lead,access_management.group_pmo,
 access_helpdesk_ticket_pmo,helpdesk.ticket PMO,helpdesk.model_helpdesk_ticket,access_management.group_pmo,1,0,0,0
 access_helpdesk_team_pmo,helpdesk.team PMO,helpdesk.model_helpdesk_team,access_management.group_pmo,1,0,0,0
 access_project_task_burndown_report_pmo,project.task.burndown.report PMO,project.model_project_task_burndown_chart_report,access_management.group_pmo,1,0,0,0
+access_crm_lead_bd_manager,crm.lead BD MANAGER,crm.model_crm_lead,access_management.group_bd_manager,1,1,1,0
+access_sale_order_bd_manager,sale.order BD MANAGER,sale.model_sale_order,access_management.group_bd_manager,1,1,1,0
+access_sale_order_line_bd_manager,sale.order.line BD MANAGER,sale.model_sale_order_line,access_management.group_bd_manager,1,1,1,0
+access_res_partner_bd_manager,res.partner BD MANAGER,base.model_res_partner,access_management.group_bd_manager,1,1,1,0
+access_product_template_bd_manager,product.template BD MANAGER,product.model_product_template,access_management.group_bd_manager,1,0,0,0
+access_product_product_bd_manager,product.product BD MANAGER,product.model_product_product,access_management.group_bd_manager,1,0,0,0
+access_sale_subscription_plan_bd_manager,sale.subscription.plan BD MANAGER,sale_subscription.model_sale_subscription_plan,access_management.group_bd_manager,1,0,0,0
+access_sale_report_bd_manager,sale.report BD MANAGER,sale.model_sale_report,access_management.group_bd_manager,1,0,0,0
