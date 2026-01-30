@@ -39,9 +39,14 @@ class MarketingCampaign(models.Model):
             raise AccessError(_("Vous n'êtes pas autorisé à modifier des campagnes marketing."))
         return super().write(vals)
 
+    def _dh_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_dh")
+
     def unlink(self):
         if self._dg_read_all_active():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des campagnes marketing."))
+        if self._dh_no_delete():
+            raise AccessError(_("Le groupe DH n'est pas autorisé à supprimer des campagnes marketing."))
         return super().unlink()
 
 
@@ -78,7 +83,24 @@ class MarketingActivity(models.Model):
             raise AccessError(_("Vous n'êtes pas autorisé à modifier des activités marketing."))
         return super().write(vals)
 
+    def _dh_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_dh")
+
     def unlink(self):
         if self._dg_read_all_active():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des activités marketing."))
+        if self._dh_no_delete():
+            raise AccessError(_("Le groupe DH n'est pas autorisé à supprimer des activités marketing."))
+        return super().unlink()
+
+
+class MarketingParticipant(models.Model):
+    _inherit = "marketing.participant"
+
+    def _dh_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_dh")
+
+    def unlink(self):
+        if self._dh_no_delete():
+            raise AccessError(_("Le groupe DH n'est pas autorisé à supprimer des participants marketing."))
         return super().unlink()

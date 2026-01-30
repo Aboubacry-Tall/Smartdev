@@ -100,3 +100,11 @@ access_hr_payslip_line_paie,hr.payslip.line PAIE,hr_payroll.model_hr_payslip_lin
 access_hr_payslip_run_paie,hr.payslip.run PAIE,hr_payroll.model_hr_payslip_run,access_management.group_paie,1,1,1,0
 access_hr_employee_paie,hr.employee PAIE,hr.model_hr_employee,access_management.group_paie,1,0,0,0
 access_hr_version_paie,hr.version PAIE,hr.model_hr_version,access_management.group_paie,1,0,0,0
+access_website_dh,website DH,website.model_website,access_management.group_dh,1,1,1,0
+access_website_page_dh,website.page DH,website.model_website_page,access_management.group_dh,1,1,1,0
+access_marketing_campaign_dh,marketing.campaign DH,marketing_automation.model_marketing_campaign,access_management.group_dh,1,1,1,0
+access_marketing_activity_dh,marketing.activity DH,marketing_automation.model_marketing_activity,access_management.group_dh,1,1,1,0
+access_marketing_participant_dh,marketing.participant DH,marketing_automation.model_marketing_participant,access_management.group_dh,1,1,1,0
+access_crm_lead_dh,crm.lead DH,crm.model_crm_lead,access_management.group_dh,1,0,0,0
+access_product_template_dh,product.template DH,product.model_product_template,access_management.group_dh,1,0,0,0
+access_product_product_dh,product.product DH,product.model_product_product,access_management.group_dh,1,0,0,0
