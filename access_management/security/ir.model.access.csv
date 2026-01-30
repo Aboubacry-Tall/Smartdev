@@ -44,3 +44,10 @@ access_hr_payslip_audit,hr.payslip AUDIT,hr_payroll.model_hr_payslip,access_mana
 access_hr_payslip_line_audit,hr.payslip.line AUDIT,hr_payroll.model_hr_payslip_line,access_management.group_audit,1,0,0,0
 access_hr_payslip_run_audit,hr.payslip.run AUDIT,hr_payroll.model_hr_payslip_run,access_management.group_audit,1,0,0,0
 access_ir_logging_audit,ir.logging AUDIT,base.model_ir_logging,access_management.group_audit,1,0,0,0
+access_project_project_pmo,project.project PMO,project.model_project_project,access_management.group_pmo,1,1,1,0
+access_project_task_pmo,project.task PMO,project.model_project_task,access_management.group_pmo,1,1,1,0
+access_account_analytic_line_pmo,account.analytic.line PMO,analytic.model_account_analytic_line,access_management.group_pmo,1,1,0,0
+access_crm_lead_pmo,crm.lead PMO,crm.model_crm_lead,access_management.group_pmo,1,0,0,0
+access_helpdesk_ticket_pmo,helpdesk.ticket PMO,helpdesk.model_helpdesk_ticket,access_management.group_pmo,1,0,0,0
+access_helpdesk_team_pmo,helpdesk.team PMO,helpdesk.model_helpdesk_team,access_management.group_pmo,1,0,0,0
+access_project_task_burndown_report_pmo,project.task.burndown.report PMO,project.model_project_task_burndown_chart_report,access_management.group_pmo,1,0,0,0
