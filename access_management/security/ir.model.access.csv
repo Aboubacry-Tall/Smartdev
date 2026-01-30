@@ -79,3 +79,12 @@ access_helpdesk_team_support_n2,helpdesk.team SUPPORT N2,helpdesk.model_helpdesk
 access_project_project_support_n2,project.project SUPPORT N2,project.model_project_project,access_management.group_support_n2,1,0,0,0
 access_project_task_support_n2,project.task SUPPORT N2,project.model_project_task,access_management.group_support_n2,1,0,0,0
 access_ir_logging_support_n2,ir.logging SUPPORT N2,base.model_ir_logging,access_management.group_support_n2,1,0,0,0
+access_account_move_finance,account.move FINANCE,account.model_account_move,access_management.group_finance,1,1,1,0
+access_account_move_line_finance,account.move.line FINANCE,account.model_account_move_line,access_management.group_finance,1,1,1,0
+access_account_journal_finance,account.journal FINANCE,account.model_account_journal,access_management.group_finance,1,1,1,0
+access_account_account_finance,account.account FINANCE,account.model_account_account,access_management.group_finance,1,1,1,0
+access_account_payment_finance,account.payment FINANCE,account.model_account_payment,access_management.group_finance,1,1,1,0
+access_sale_subscription_plan_finance,sale.subscription.plan FINANCE,sale_subscription.model_sale_subscription_plan,access_management.group_finance,1,1,1,0
+access_account_invoice_report_finance,account.invoice.report FINANCE,account.model_account_invoice_report,access_management.group_finance,1,0,0,0
+access_res_partner_finance,res.partner FINANCE,base.model_res_partner,access_management.group_finance,1,0,0,0
+access_crm_lead_finance,crm.lead FINANCE,crm.model_crm_lead,access_management.group_finance,1,0,0,0

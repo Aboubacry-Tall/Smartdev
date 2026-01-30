@@ -15,6 +15,9 @@ class AccountMove(models.Model):
             or self.env.user.has_group("access_management.group_audit")
         )
 
+    def _finance_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_finance")
+
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
         result = super().get_view(view_id=view_id, view_type=view_type, **options)
@@ -42,6 +45,8 @@ class AccountMove(models.Model):
     def unlink(self):
         if self._dg_read_all_active():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des écritures comptables/factures."))
+        if self._finance_no_delete():
+            raise AccessError(_("Le groupe FINANCE n'est pas autorisé à supprimer des écritures comptables/factures."))
         return super().unlink()
 
 
@@ -53,6 +58,9 @@ class AccountMoveLine(models.Model):
             self.env.user.has_group("access_management.group_dg_read_all")
             or self.env.user.has_group("access_management.group_audit")
         )
+
+    def _finance_no_delete(self) -> bool:
+        return (not self.env.su) and self.env.user.has_group("access_management.group_finance")
 
     @api.model
     def get_view(self, view_id=None, view_type="form", **options):
@@ -81,4 +89,6 @@ class AccountMoveLine(models.Model):
     def unlink(self):
         if self._dg_read_all_active():
             raise AccessError(_("Vous n'êtes pas autorisé à supprimer des lignes comptables."))
+        if self._finance_no_delete():
+            raise AccessError(_("Le groupe FINANCE n'est pas autorisé à supprimer des lignes comptables."))
         return super().unlink()
