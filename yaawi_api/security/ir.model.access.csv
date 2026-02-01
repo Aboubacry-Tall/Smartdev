@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+yaawi_api.access_fleet_car_api,fleet.car API,model_fleet_car,base.group_user,1,1,1,1
+yaawi_api.access_ride_line_api,ride.line API,model_ride_line,base.group_user,1,1,1,1
+yaawi_api.access_ride_offer_api,ride.offer API,model_ride_offer,base.group_user,1,1,1,1
+yaawi_api.access_ride_order_api,ride.order API,model_ride_order,base.group_user,1,1,1,1
+yaawi_api.access_ride_reservation_api,ride.reservation API,model_ride_reservation,base.group_user,1,1,1,1
+yaawi_api.access_app_service_api,access_app_service,yaawi_api.model_app_service,base.group_user,1,1,1,1
+yaawi_api.access_app_module_api,access_app_module,yaawi_api.model_app_module,base.group_user,1,1,1,1
+yaawi_api.access_bus_activity_api,access_bus_activity,yaawi_api.model_bus_activity,base.group_user,1,1,1,1

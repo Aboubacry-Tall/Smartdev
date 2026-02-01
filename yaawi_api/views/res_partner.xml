@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="yaawi_api_res_partner_form_inherit" model="ir.ui.view">
+        <field name="name">yaawi_api.res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="inside">
+                <!-- Informations personnelles -->
+                <group string="Informations personnelles">
+                    <field name="name"/>
+                    <field name="email" widget="email"/>
+                    <field name="phone"/>
+                    <field name="rating"/>
+                    <field name="state"/>
+                </group>
+
+                <!-- Informations chauffeur -->
+                <group string="Informations Chauffeur">
+                    <field name="is_driver" widget="boolean_toggle"/>
+                    <field name="is_active_driver" widget="boolean_toggle"/>
+                    <field name="license_number"/>
+                    <field name="vehicle_id"/>
+                </group>
+
+                <!-- Comptes liés -->
+                <notebook string="Comptes Liés">
+                    <page string="Google">
+                        <group>
+                            <field name="google_id"/>
+                            <field name="google_name"/>
+                            <field name="google_email" widget="email"/>
+                            <field name="google_photo" widget="image"/>
+                        </group>
+                    </page>
+                    <page string="Apple">
+                        <group>
+                            <field name="apple_id"/>
+                            <field name="apple_name"/>
+                            <field name="apple_email" widget="email"/>
+                            <field name="apple_photo" widget="image"/>
+                        </group>
+                    </page>
+                </notebook>
+
+                <!-- Documents -->
+                <notebook string="Documents">
+                    <page string="Identité">
+                        <group>
+                            <field name="identity_file" widget="image"/>
+                            <field name="is_identity_validated" widget="boolean_toggle"/>
+                        </group>
+                    </page>
+                    <page string="Permis">
+                        <group>
+                            <field name="license_file" widget="image"/>
+                            <field name="is_license_validated" widget="boolean_toggle"/>
+                        </group>
+                    </page>
+                    <page string="Autres documents">
+                        <group>
+                            <field name="document_file" widget="image"/>
+                            <field name="is_document_validated" widget="boolean_toggle"/>
+                        </group>
+                    </page>
+                    <page string="Véhicule">
+                        <group>
+                            <field name="vehicle_file" widget="image"/>
+                            <field name="is_vehicle_validated" widget="boolean_toggle"/>
+                        </group>
+                    </page>
+                    <page string="Assurance">
+                        <group>
+                            <field name="assurance_file" widget="image"/>
+                            <field name="is_assurance_validated" widget="boolean_toggle"/>
+                        </group>
+                    </page>
+                </notebook>
+
+                <!-- Vérification -->
+                <group string="Vérification">
+                    <field name="is_verified" readonly="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -36,6 +36,20 @@ class SaleOrder(models.Model):
         compute='_compute_hide_prices_for_technicien',
     )
     
+    is_technicien = fields.Boolean(
+        string='Est Technicien',
+        compute='_compute_is_technicien',
+        store=False
+    )
+    
+    @api.depends_context('uid')
+    def _compute_is_technicien(self):
+        """Vérifie si l'utilisateur connecté est un technicien"""
+        for record in self:
+            # Vérifier si l'utilisateur a le groupe technicien
+            record.is_technicien = self.env.user.has_group('wg_management.group_technicien')
+
+    
     @api.depends()
     def _compute_hide_prices_for_technicien(self):
         is_technicien = self.env.user.has_group('wg_management.group_technicien')

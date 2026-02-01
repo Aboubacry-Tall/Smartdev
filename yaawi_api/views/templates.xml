@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="driver_portal_form_template" name="Driver Portal Form">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <title>Driver Registration</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+            </head>
+            <body>
+                <div class="container mt-4">
+                    <form action="/yaawi/api/v1/driver/submit" method="post" class="col-lg-6 mx-auto" enctype="multipart/form-data">
+                        <h2 class="mb-4">Driver Registration Form</h2>
+
+                        <!-- Numéro de téléphone & Email en 2 colonnes -->
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="phone">Numéro de téléphone</label>
+                                    <input type="tel" class="form-control" name="phone" required="required"/>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" name="email" required="required"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- License Number -->
+                        <div class="form-group mt-3">
+                            <label for="license_number">Numéro de permis</label>
+                            <input type="text" class="form-control" name="license_number" required="required"/>
+                        </div>
+
+                        <!-- Statut du chauffeur -->
+                        <!-- <div class="form-group mt-3">
+                            <label for="state">Statut</label>
+                            <select class="form-control" name="state">
+                                <t t-foreach="states" t-as="state">
+                                    <option t-att-value="state[0]"><t t-esc="state[1]"/></option>
+                                </t>
+                            </select>
+                        </div> -->
+
+                        <!-- Matricule du véhicule -->
+                        <div class="form-group mt-3">
+                            <label for="vehicle_matricule">Matricule du véhicule</label>
+                            <input type="text" class="form-control" name="vehicle_matricule" required="required"/>
+                        </div>
+
+                        <!-- Champs de téléchargement de fichiers -->
+                        <div class="form-group mt-3">
+                            <label for="id_card">Carte d'identité</label>
+                            <input type="file" class="form-control" name="id_card" accept="image/*,application/pdf" required="required"/>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="car_registration">Carte grise</label>
+                            <input type="file" class="form-control" name="car_registration" accept="image/*,application/pdf" required="required"/>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="car_interior">Photo intérieure du véhicule</label>
+                            <input type="file" class="form-control" name="car_interior" accept="image/*" required="required"/>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="car_exterior">Photo extérieure du véhicule</label>
+                            <input type="file" class="form-control" name="car_exterior" accept="image/*" required="required"/>
+                        </div>
+
+                        <!-- Bouton de soumission -->
+                        <button type="submit" class="btn btn-dark mt-4">Soumettre</button>
+                    </form>
+                </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            </body>
+        </html>
+    </template>
+</odoo>
