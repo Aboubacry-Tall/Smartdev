@@ -13,14 +13,50 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             
-            <!-- Cacher les colonnes prix dans les lignes de commande pour les techniciens -->
-            <xpath expr="//notebook/page[@name='order_lines']//field[@name='order_line']//field[@name='price_unit']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//notebook/page[@name='order_lines']//field[@name='order_line']//field[@name='price_subtotal']" position="attributes">
-                <attribute name="groups">!wg_management.group_technicien</attribute>
+            <!-- Cacher les colonnes de prix dans la liste des lignes de commande -->
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_unit']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
             </xpath>
             
+            <xpath expr="//field[@name='order_line']//list//field[@name='discount']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal'][1]" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_total'][1]" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            
+            <!-- Cacher aussi les colonnes optionnelles de prix -->
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal'][2]" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_total'][2]" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            
+            <!-- Cacher les prix dans le formulaire popup des lignes -->
+            <xpath expr="//field[@name='order_line']//form//field[@name='price_unit']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Cacher les prix dans la vue kanban mobile -->
+            <xpath expr="//field[@name='order_line']//kanban//field[@name='price_unit']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='order_line']//kanban//field[@name='price_subtotal']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <!-- Cacher le total en bas de page -->
+            <xpath expr="//field[@name='tax_totals']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             
             <field name="payment_term_id" position="after">
                 <field name="technicien_ids" 
@@ -28,7 +64,7 @@
                        options="{'no_create': True}"
                        placeholder="Sélectionner les techniciens..." invisible="1" />
                 <field name="rejection_motif_id" 
-                       placeholder="Sélectionner un motif de rejet..." invisible="state == 'draft'" />
+                       placeholder="Sélectionner un motif de rejet..." />
             </field>
             <field name="partner_id" position="after">
                 <field name="longitude" required="True"/>
