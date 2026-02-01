@@ -16,9 +16,13 @@ class AccountMove(models.Model):
         # Créer un contrat pour chaque facture qui a le champ create_contract coché
         for move in self:
             if move.create_contract and move.move_type in ('out_invoice', 'out_refund'):
-                # Définir le type de contact à 'C' (Client) pour que le partenaire apparaisse dans la liste des clients
+                # Marquer le partenaire comme client et lui attribuer un code identifiant si nécessaire
                 if move.partner_id:
-                    move.partner_id.write({'type_contact': 'C'})
+                    partner_vals = {'is_client': True}
+                    if not move.partner_id.code:
+                        existing_clients = self.env['res.partner'].search_count([('is_client', '=', True)])
+                        partner_vals['code'] = f"HQ/{existing_clients + 1}"
+                    move.partner_id.write(partner_vals)
                 move._create_contract_from_invoice()
         
         return result

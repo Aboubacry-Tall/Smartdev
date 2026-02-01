@@ -66,6 +66,7 @@
                         <group>
                             <field name="name" readonly="1"/>
                             <field name="partner_id" options="{'no_create': True}" required="True"/>
+                            <field name="partner_address" widget="text" colspan="2"/>
                             <field name="sale_order_id" options="{'no_create': True}"/>
                             <field name="contract_id" options="{'no_create': True}"/>
                         </group>

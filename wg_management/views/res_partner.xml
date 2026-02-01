@@ -20,6 +20,7 @@
             <xpath expr="//div[@class='o_address_format']" position="after">
                 <field name="nni" placeholder="NNI..."/>
                 <field name="type_contact"/>
+                <field name="is_client"/>
             </xpath>
         </field>
     </record>

@@ -32,6 +32,7 @@ class WgIntervention(models.Model):
     
     name = fields.Char(string='Numéro d\'intervention', required=True, default=lambda self: _('New'), readonly=True)
     partner_id = fields.Many2one('res.partner', string='Client', required=True, tracking=True, index=True)
+    partner_address = fields.Char(string='Adresse du client', related='partner_id.contact_address', readonly=True)
     sale_order_id = fields.Many2one('sale.order', string='Devis', tracking=True, help='Devis associé à cette intervention')
     contract_id = fields.Many2one('wg.contract', string='Contrat', tracking=True, help='Contrat associé à cette intervention')
     commercial_id = fields.Many2one('res.users', string='Commercial', required=True, default=lambda self: self.env.user, tracking=True, domain=_get_commercial_domain)

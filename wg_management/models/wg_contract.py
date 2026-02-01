@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+from datetime import date
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.exceptions import UserError
 from dateutil.relativedelta import relativedelta
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class WgContract(models.Model):
     _name = 'wg.contract'
@@ -32,12 +37,35 @@ class WgContract(models.Model):
     notes = fields.Text(string='Notes')
     intervention_ids = fields.One2many('wg.intervention', 'contract_id', string='Interventions')
     intervention_count = fields.Integer(string='Nombre d\'interventions', compute='_compute_intervention_count')
+    invoice_count = fields.Integer(string='Nombre de factures', compute='_compute_invoice_count')
     
     @api.depends('intervention_ids')
     def _compute_intervention_count(self):
         """Calculer le nombre d'interventions pour le smart button"""
         for contract in self:
             contract.intervention_count = len(contract.intervention_ids)
+    
+    @api.depends('invoice_ids')
+    def _compute_invoice_count(self):
+        """Calculer le nombre de factures pour le smart button"""
+        for contract in self:
+            contract.invoice_count = len(contract.invoice_ids)
+    
+    def action_view_invoices(self):
+        """Action pour ouvrir les factures du contrat"""
+        self.ensure_one()
+        action = {
+            'name': 'Factures',
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', self.invoice_ids.ids)],
+            'context': {'default_partner_id': self.partner_id.id},
+        }
+        if len(self.invoice_ids) == 1:
+            action['view_mode'] = 'form'
+            action['res_id'] = self.invoice_ids.id
+        return action
     
     def action_view_interventions(self):
         """Action pour ouvrir les interventions du contrat"""
@@ -118,4 +146,65 @@ class WgContract(models.Model):
         """Action pour imprimer le contrat"""
         self.ensure_one()
         return self.env.ref('wg_management.report_contract').report_action(self)
+
+    def _has_invoice_for_month(self, year, month):
+        """Vérifie si le contrat a déjà une facture pour le mois donné."""
+        self.ensure_one()
+        if not self.invoice_ids:
+            return False
+        for inv in self.invoice_ids:
+            if inv.invoice_date and inv.invoice_date.year == year and inv.invoice_date.month == month:
+                return True
+        return False
+
+    def _create_monthly_invoice(self, invoice_date):
+        """Crée une facture mensuelle pour ce contrat à la date donnée."""
+        self.ensure_one()
+        if not self.product_id:
+            raise UserError(_("Le contrat %s n'a pas de produit défini.") % self.name)
+        price_unit = self.product_id.lst_price
+        line_name = _("%s - %s") % (self.product_id.name, invoice_date.strftime("%Y-%m"))
+        move_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.partner_id.id,
+            'invoice_date': invoice_date,
+            'ref': _("%s - %s") % (self.name, invoice_date.strftime("%Y-%m")),
+            'invoice_line_ids': [
+                (0, 0, {
+                    'product_id': self.product_id.id,
+                    'quantity': 1,
+                    'price_unit': price_unit,
+                    'name': line_name,
+                }),
+            ],
+        }
+        move = self.env['account.move'].with_context(default_move_type='out_invoice').create(move_vals)
+        self.write({'invoice_ids': [(4, move.id)]})
+        _logger.info("Facture mensuelle créée: %s pour le contrat %s", move.name, self.name)
+        return move
+
+    @api.model
+    def cron_generate_monthly_invoices(self):
+        """
+        Cron exécuté le 1er de chaque mois.
+        Génère une facture pour chaque contrat actif qui n'a pas encore de facture pour le mois en cours.
+        """
+        today = date.today()
+        if today.day != 1:
+            _logger.debug("cron_generate_monthly_invoices: pas le 1er du mois, ignoré.")
+            return
+        contracts = self.search([('state', '=', 'active')])
+        created = 0
+        for contract in contracts:
+            # Ne pas générer si le contrat est déjà expiré à cette date
+            if contract.end_date and contract.end_date < today:
+                continue
+            if contract._has_invoice_for_month(today.year, today.month):
+                continue
+            try:
+                contract._create_monthly_invoice(today)
+                created += 1
+            except Exception as e:
+                _logger.exception("Erreur création facture mensuelle pour contrat %s: %s", contract.name, e)
+        _logger.info("cron_generate_monthly_invoices: %s facture(s) créée(s) pour %s contrat(s) actifs.", created, len(contracts))
 

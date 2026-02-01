@@ -7,7 +7,10 @@ class ResPartner(models.Model):
     contract_ids = fields.One2many('wg.contract', 'partner_id', string='Contrats Internet')
     contract_count = fields.Integer(string='Nombre de contrats', compute='_compute_contract_count')
     nni = fields.Char(string="Numéro National d'identification")
-    type_contact = fields.Selection([('C', 'Client'), ('F', 'Fournisseur'), ('A', 'Autre')], string="Type de Contact")
+    type_contact = fields.Selection([('A', 'A'), ('B', 'B'), ('C', 'C')], string="Type de Contact")
+    is_client = fields.Boolean(string='Client', default=False,
+                               help='Coché si ce partenaire est un client (apparaît dans la liste Clients)')
+    code = fields.Char(string='Code client', help='Identifiant client (ex: HQ/1, HQ/2...)')
     
     @api.depends('contract_ids')
     def _compute_contract_count(self):

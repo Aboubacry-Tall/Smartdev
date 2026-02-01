@@ -31,6 +31,10 @@ class SaleOrder(models.Model):
     longitude = fields.Char(string='Longitude', help='Coordonnée de longitude')
     latitude = fields.Char(string='Latitude', help='Coordonnée de latitude')
     
+    address = fields.Char(
+        string='Adresse',
+    )
+    
     hide_prices_for_technicien = fields.Boolean(
         string='Cacher les prix (technicien)',
         compute='_compute_hide_prices_for_technicien',

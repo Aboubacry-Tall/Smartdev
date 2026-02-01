@@ -13,6 +13,8 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             
+            
+            
             <!-- Ajouter le champ is_technicien invisible -->
             <field name="partner_id" position="before">
                 <field name="is_technicien" invisible="1"/>
@@ -79,6 +81,8 @@
                        invisible="1" />
                 <field name="rejection_motif_id" 
                        placeholder="Sélectionner un motif de rejet..." />
+                <!-- Adresse au-dessus de date_order -->
+                <field name="address" placeholder="Adresse du client..."/>
             </field>
             
             <button name="action_confirm" position="attributes">

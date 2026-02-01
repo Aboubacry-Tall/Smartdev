@@ -30,6 +30,7 @@ Ce module définit trois rôles principaux :
         'security/wg_management_security.xml',
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
+        'data/ir_cron_monthly_invoices.xml',
         'reports/contract_report.xml',
         'views/rejection_motif.xml',
         'views/sale_order.xml',
